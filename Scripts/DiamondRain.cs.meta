@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: a1379b9a8e9c5344da9000eee2cb24e1
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - skyDiamond: {fileID: 100000, guid: 846b67f8cc9802c45bfa00fee57ba0b3, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 

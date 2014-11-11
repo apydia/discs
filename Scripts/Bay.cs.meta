@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: 9f85a0e532b25c24da0a9d9424fa2932
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - texture: {instanceID: 0}
+  - playerHomeMarker: {fileID: 100000, guid: 2ae1d601d7f8dab48bd8fe326c6b6687, type: 2}
+  - bayMesh: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
