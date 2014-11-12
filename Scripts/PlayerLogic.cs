@@ -272,7 +272,6 @@ public class PlayerLogic : Photon.MonoBehaviour
 		for (int cnt = 0; cnt < numPowerUps; cnt++) {
 			PowerUp powerUp = powerUps[cnt];
 			GUITexture texture = null;
-			// TODO?: move this to powerupspawner??!
 			if (powerUp.GetName() == "PowerUpBomb") {
 				GameObject obj = (GameObject) Instantiate(guiTextureBomb, new Vector3(0f, 0f, 0f), Quaternion.identity);
 				texture = obj.GetComponent<GUITexture>();
@@ -303,12 +302,6 @@ public class PlayerLogic : Photon.MonoBehaviour
 					selector.pixelInset = r;
 				}
 			}
-			/*
-			if (cnt != selectedPowerUpIndex) {
-				s += powerUp.GetName()+powerUp.GetId()+"\n";
-			} else {
-				s += "--> " + powerUp.GetName()+powerUp.GetId()+"\n";
-			}*/
 		}
 
 		int ammo = gameObject.GetComponent<PlayerController>().gunAmmoAmount;

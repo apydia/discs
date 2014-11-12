@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PowerUpSpawner : Photon.MonoBehaviour
 {
-	public GameObject prePostFlag;
+	public GameObject flagItem;
 	public GameObject bomb;
 	public GameObject rocket;
 	public GameObject ammo;
@@ -12,7 +12,7 @@ public class PowerUpSpawner : Photon.MonoBehaviour
 	public GameObject Spawn(int id, string type, Vector3 position, Quaternion rotation, object[] powerUpData) {
 		switch (type) {
 			case "FlagItem":
-				GameObject obj = (GameObject) Instantiate(prePostFlag, position, rotation);
+				GameObject obj = (GameObject) Instantiate(flagItem, position, rotation);
 				obj.GetComponent<FlagItem>().Init (id, powerUpData);
 				obj.name = "PowerUp"+id;
 				return obj;
@@ -41,8 +41,7 @@ public class PowerUpSpawner : Photon.MonoBehaviour
 
 	void CreatePowerUp(int id, string type, int discId, int sliceId, Vector3 pos, object[] powerUpData, double startTime) {
 		GameObject slice = GameObject.Find ("Disc"+discId+"Slice"+sliceId);
-		
-		//PowerUpSpawner spawner = GameObject.Find ("Scripts").GetComponent<PowerUpSpawner>();
+
 		GameObject gObject = Spawn(id, type, pos, Quaternion.identity, powerUpData);
 		
 		if (gObject != null) {
@@ -68,7 +67,7 @@ public class PowerUpSpawner : Photon.MonoBehaviour
 		
 	}
 
-	public void CreatePowerUpOnRandomSlice(PowerUp powerUp) {
+	public void CreatePowerUpOnRandomSlice(Spawnable powerUp) {
 		GameObject discs = (GameObject)GameObject.Find ("DiscsMain");
 		if (discs != null) {
 			

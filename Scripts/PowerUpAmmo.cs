@@ -29,7 +29,6 @@ public class PowerUpAmmo : MonoBehaviour, PowerUp {
 	
 	public void Init(int id, object[] initData) {
 		this.id  = id;
-		
 	}
 
 	public void Activate(GameObject player, Vector3 pos) {

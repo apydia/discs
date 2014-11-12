@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class FlagItem : Photon.MonoBehaviour, PowerUp {
+public class FlagItem : Photon.MonoBehaviour, Spawnable {
 
 	public int playerID;
 	public Vector3 color;
@@ -55,8 +55,6 @@ public class FlagItem : Photon.MonoBehaviour, PowerUp {
 		renderer.material.color = new Color(color.x, color.y, color.z);
 	}
 
-	public void Activate(GameObject player, Vector3 pos) {}
-
 	[RPC]
 	void CapturedByPlayer(int playerID) {
 		GameObject player = GameObject.Find ("Player"+playerID);
@@ -69,15 +67,9 @@ public class FlagItem : Photon.MonoBehaviour, PowerUp {
 
 	void OnTriggerEnter(Collider other) {
 		if (other.gameObject.tag == "Player") {
-
 			if (capturedByPlayer == -1) {
-				//transform.parent = other.transform;
 				other.gameObject.GetComponent<PlayerLogic>().CapturedFlagItem(id);
 			}
-			//photonView.RPC ("CapturedByPlayer", PhotonTargets.All, other.gameObject.GetComponent<PlayerLogic>().playerID);
-			//other.gameObject.GetComponent<PlayerLogic>().flagTokens = playerID;
-			//capturedByPlayer = other.gameObject.GetComponent<PlayerLogic>().playerID;
-			//other.gameObject.GetComponent<PlayerLogic>().flagItems.Add (this);
 		}
 	}
 }

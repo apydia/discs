@@ -34,7 +34,6 @@ public class MayhemSpawner : Photon.MonoBehaviour {
 	}
 
 	void CreateRocket(Vector3 origin, Vector3 destination, double startTime) {
-		//destination.y = 20f;
 		GameObject r = (GameObject) Instantiate (rocket, origin, Quaternion.identity); 
 		r.GetComponent<Rocket>().origin = origin; 
 		r.GetComponent<Rocket>().destination = destination; 

@@ -81,7 +81,7 @@ public class PlayerController : Photon.MonoBehaviour {
 		mov = new Vector3 (-moveVer, 0.0f, moveHor);
 		mov = mov * speed;
 
-		rigidbody.transform.Translate (mov, Space.World);//AddForce (mov * 20);
+		transform.Translate (mov, Space.World);//AddForce (mov * 20);
 		if (mov.magnitude > 0.05f) {
 			rigidbody.transform.rotation = Quaternion.LookRotation(mov);//Quaternion.LookRotation(mov);
 			animation["Walk"].speed = 1.5f;

@@ -12,8 +12,7 @@ public class GameMain : Photon.MonoBehaviour {
 	public GameObject discs;
 	public GameObject playerHomeMarker;
 	public GameObject playerSpeech;
-
-	public GameObject prePostFlag;
+	
 	public GameObject zoomFadeText;
 	public GameObject winStar;
 	public GameObject diamondRain;
@@ -499,7 +498,7 @@ public class GameMain : Photon.MonoBehaviour {
 		}
 	}
 
-	public void CreatePowerUpOnRandomSlice(PowerUp powerUp) {
+	public void CreatePowerUpOnRandomSlice(Spawnable powerUp) {
 		GameObject scriptsComp = (GameObject)GameObject.Find ("Scripts");
 		if (discs != null) {
 			PowerUpSpawner spawner = scriptsComp.GetComponent<PowerUpSpawner>();
@@ -511,8 +510,8 @@ public class GameMain : Photon.MonoBehaviour {
 
 	void SpawnPowerUp(PowerUpInfo info) {
 		Type t = Type.GetType(info.typeName);
-		PowerUp pUp = (PowerUp)Activator.CreateInstance(t);
-		CreatePowerUpOnRandomSlice(pUp);
+		Spawnable powerUp = (Spawnable)Activator.CreateInstance(t);
+		CreatePowerUpOnRandomSlice(powerUp);
 	}
 
 	void RoundEnds() {

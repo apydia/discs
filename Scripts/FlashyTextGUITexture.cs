@@ -48,6 +48,5 @@ public class FlashyTextGUITexture : MonoBehaviour {
 			                                              aspectRatio/256f*15f, 
 			                                              1f);
 		}
-		//gameObject.GetComponent<GUIText>().fontSize = 15+(int)((Time.time-createDate)*100f);
 	}
 }
