@@ -73,13 +73,16 @@ public class MainMenu : Photon.MonoBehaviour {
 	}
 
 	void EnterName(int w, int h, Event e) {
-		if (e.keyCode == KeyCode.Return) {
+		if (e.keyCode == KeyCode.Return && gameData.playerName.Trim() != "") {
 			SaveGameData();
 			state = EMenuState.MainMenu;
-			PhotonNetwork.playerName = gameData.playerName;
+			PhotonNetwork.playerName = gameData.playerName.Trim();
 		} else {
 			GUI.Label (new Rect(w/2-150, h/2-70, 300, 30), "Enter thy name", "label");
 			gameData.playerName = GUI.TextField(new Rect(w/2-150, h/2-30, 300, 38), gameData.playerName, 25, "textfield");
+		}
+		if (gameData.playerName.Trim() == "") {
+			gameData.playerName = "";
 		}
 	}
 
