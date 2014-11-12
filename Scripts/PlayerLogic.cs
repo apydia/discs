@@ -129,7 +129,6 @@ public class PlayerLogic : Photon.MonoBehaviour
 			flagItems.Add (flagItem.GetComponent<FlagItem>());
 
 			PutFlagItemsInSlots();
-
 		}
 	}
 
@@ -428,6 +427,12 @@ public class PlayerLogic : Photon.MonoBehaviour
 	
 	public void Say(string what) {
 		photonView.RPC ("SayRPC", PhotonTargets.All, what);
+	}
+
+	void OnCollisionEnter(Collision other) {
+		if (other.gameObject.tag == "Terrain") {
+			this.Die ();
+		}
 	}
 
 	bool isInited = false;
