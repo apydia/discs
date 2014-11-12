@@ -6,10 +6,17 @@ public class Explosion : MonoBehaviour {
 	public float explodeDuration = 0.1f;
 	public float explodeRadius = 15f;
 	public Transform parentTransform;
+	public GameObject explosionEffect;
+
 	// Use this for initialization
 	void Start () {
 		transform.parent = parentTransform;
 		renderer.material.color = new Color(0.5f,0.5f,0.5f,0.2f);
+		GameObject obj = (GameObject)Instantiate(explosionEffect, transform.position, Quaternion.identity);
+		obj.transform.Rotate(new Vector3(-90f, 0f, 0f));
+		Vector3 pos = obj.transform.position;
+		pos.y = 2f;
+		obj.transform.position = pos;
 	}
 
 	double explodeStartTime = 0;
