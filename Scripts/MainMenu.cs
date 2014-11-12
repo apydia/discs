@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
@@ -52,12 +53,16 @@ public class MainMenu : Photon.MonoBehaviour {
 			FirstRoundSettings(w, h, e);
 		}
 
-		if (state == EMenuState.RoundSettings) {
+		if (state == EMenuState.RoundSettings && !show_chat_window) {
 			LevelBuilder(w, h, e);
 		}
 
 		if (talk_mode) {
 			TalkMode (w, h, e);
+		}
+
+		if (show_chat_window) {
+			ShowChatWindow (w, h, e);
 		}
 
 		if (!gameStarted) {
@@ -280,12 +285,19 @@ public class MainMenu : Photon.MonoBehaviour {
 		}
 	}
 
+	List<string> chatHistory = new List<string>();
+
+	[RPC]
+	void Chat(string s) {
+		chatHistory.Add (s);
+	}
+
 	void TalkMode(int w, int h, Event e) {
 		if (e.keyCode == KeyCode.Return) {
 			talk_mode = false;
 			GameObject player = GameObject.Find ("Player"+PhotonNetwork.player.ID);
 			player.GetComponent<PlayerLogic>().Say(talkString);
-			
+			photonView.RPC ("Chat", PhotonTargets.All, PhotonNetwork.player.name + ": " + talkString);
 			GUI.FocusControl("");
 		} else {
 			GUI.SetNextControlName("talkField");
@@ -294,6 +306,17 @@ public class MainMenu : Photon.MonoBehaviour {
 			if (GUI.GetNameOfFocusedControl() != "talkField") {
 				GUI.FocusControl("talkField");
 			}
+		}
+	}
+
+	void ShowChatWindow(int w, int h, Event e) {
+		List<string> disp = chatHistory.GetRange(Mathf.Max (0, chatHistory.Count - 11), Mathf.Min (chatHistory.Count, 10));
+		GUI.Box (new Rect(w/2-170, h/2-145, 340, 275),"");
+		int cnt = 0;
+		foreach (string s in disp) {
+			int y = h/2-130+cnt*15;
+			GUI.Label (new Rect(w/2-150, y, 300, 12), s, "labelsmall");
+			cnt++;
 		}
 	}
 
@@ -359,8 +382,14 @@ public class MainMenu : Photon.MonoBehaviour {
 			talk_mode = true;
 			talkString = "";
 		}
+		if (Input.GetKeyUp(KeyCode.C) && 
+		    (state == EMenuState.GameStarted || state == EMenuState.RoundSettings) 
+		    && !talk_mode) {
+			show_chat_window = !show_chat_window;
+		}
 	}
 
+	bool show_chat_window = false;
 	bool talk_mode = false;
 	public string talkString = "";
 }
