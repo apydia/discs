@@ -32,17 +32,26 @@ public class PlayerLogic : Photon.MonoBehaviour
 	public GameObject guiTextureRocket;
 	public GameObject guiTexturePowerUpSelector;
 	public GameObject guiTexturePullIn;
+	public GameObject guiTextureTeleport;
 
 	public GameObject playerMarker;
 	public GameObject playerSpeech;
 
 	public GameObject speech;
 
+	Dictionary<string, GameObject> gameObjs;
+
 	void Start() {
 		lastUpdate = PhotonNetwork.time;
 		flagItems = new List<FlagItem>();
 		powerUps = new PowerUp[8];
 		numPowerUps = 0;
+
+		gameObjs = new Dictionary<string, GameObject>();
+		gameObjs.Add("PowerUpBomb", guiTextureBomb);
+		gameObjs.Add("PowerUpRocket", guiTextureRocket);
+		gameObjs.Add("PowerUpPullIn", guiTexturePullIn);
+		gameObjs.Add("PowerUpTeleport", guiTextureTeleport);
 
 		UpdatePowerUpHUD();
 	}
@@ -272,18 +281,11 @@ public class PlayerLogic : Photon.MonoBehaviour
 		for (int cnt = 0; cnt < numPowerUps; cnt++) {
 			PowerUp powerUp = powerUps[cnt];
 			GUITexture texture = null;
-			if (powerUp.GetName() == "PowerUpBomb") {
-				GameObject obj = (GameObject) Instantiate(guiTextureBomb, new Vector3(0f, 0f, 0f), Quaternion.identity);
-				texture = obj.GetComponent<GUITexture>();
-			}
+			GameObject prefab;
+			bool hasObj = gameObjs.TryGetValue(powerUp.GetName(), out prefab);
 
-			if (powerUp.GetName() == "PowerUpRocket") {
-				GameObject obj = (GameObject) Instantiate(guiTextureRocket, new Vector3(0f, 0f, 0f), Quaternion.identity);
-				texture = obj.GetComponent<GUITexture>();
-			}
-
-			if (powerUp.GetName() == "PowerUpPullIn") {
-				GameObject obj = (GameObject) Instantiate(guiTexturePullIn, new Vector3(0f, 0f, 0f), Quaternion.identity);
+			if (hasObj) {
+				GameObject obj = (GameObject) Instantiate(prefab, new Vector3(0f, 0f, 0f), Quaternion.identity);
 				texture = obj.GetComponent<GUITexture>();
 			}
 
