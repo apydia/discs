@@ -239,15 +239,20 @@ public class MainMenu : Photon.MonoBehaviour {
 
 			// tweak
 			if (selVal == 2) {
+				float curHeight = 0;
 				for (int i = 0; i < gameData.powerUps.Length; i++) {
 					PowerUpInfo cur = gameData.powerUps[i];
-					GUI.Label (new Rect(w/2-150, h/2-35+(float)i*45f-offsetY-15f, 300, 12), cur.name, "labelsmall");
+					if (cur.properties.Length != 0) {
+						GUI.Label (new Rect(w/2-150, h/2-35+curHeight-offsetY-15f, 300, 12), cur.name, "labelsmall");
+					}
 					for (int t = 0; t < cur.properties.Length; t++) {
 						PowerUpProperty prop = cur.properties[t];
 						string text = prop.name + ": " + prop.val + " " + prop.unit;
-						GUI.Label (new Rect(w/2-150, h/2-35+(float)i*45f-offsetY, 300, 12), text, "labelsmall");
-						prop.val = GUI.HorizontalSlider(new Rect(w/2-150, h/2-20+(float)i*45f-offsetY, 300, 25), prop.val, prop.min, prop.max, "horizontalslider", "horizontalsliderthumb");
+						GUI.Label (new Rect(w/2-150, h/2-35+curHeight-offsetY, 300, 12), text, "labelsmall");
+						prop.val = GUI.HorizontalSlider(new Rect(w/2-150, h/2-20+curHeight-offsetY, 300, 25), prop.val, prop.min, prop.max, "horizontalslider", "horizontalsliderthumb");
+						curHeight += 30f;
 					}
+					curHeight += 15f;
 				}
 			}
 
@@ -347,6 +352,7 @@ public class MainMenu : Photon.MonoBehaviour {
 	}
 
 	void LoadGameData() {
+		//TODO: if new powerup is created defaults need to be used
 		if (File.Exists(Application.persistentDataPath + "/gameInfo.dat")) {
 			BinaryFormatter bf = new BinaryFormatter();
 			FileStream file = File.Open (Application.persistentDataPath + "/gameInfo.dat", FileMode.Open);
@@ -355,6 +361,7 @@ public class MainMenu : Photon.MonoBehaviour {
 		} else {
 			gameData = new GameData();
 		}
+		gameData = new GameData();
 	}
 
 	void OnJoinedLobby()
@@ -441,9 +448,15 @@ public class GameData
 		PowerUpProperty bombTimer = new PowerUpProperty("explosion delay", 0.5f, 7f, 3f, "secs");
 		bombInfo.properties = new PowerUpProperty[] {bombTimer};
 
+		PowerUpInfo pullInInfo = new PowerUpInfo(10f, "PowerUpPullIn", "magnetic attractor", true);
+		PowerUpProperty strength = new PowerUpProperty("strength", 50f, 1000f, 200f, "");
+		PowerUpProperty radius = new PowerUpProperty("radius", 3f, 20f, 10f, "");
+		PowerUpProperty ttl = new PowerUpProperty("time to live", 1f, 20f, 5f, "secs");
+		pullInInfo.properties = new PowerUpProperty[] {strength, radius, ttl};
+
 		PowerUpInfo ammoInfo = new PowerUpInfo(10f, "PowerUpAmmo", "ammo", false);
 
-		powerUps = new PowerUpInfo[] {rocketInfo, bombInfo, ammoInfo};
+		powerUps = new PowerUpInfo[] {rocketInfo, bombInfo, ammoInfo, pullInInfo};
 	}
 
 	public PowerUpProperty GetPowerUpProperty(string typeName, string propertyName) {

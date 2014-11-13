@@ -62,6 +62,7 @@ public class Bomb : MonoBehaviour, Spawnable {
 	 * deserialization method
 	 * */
 	public void Init(int id, object[] initData, double createTime) {
+		this.id = id;
 		this.position = (Vector3) initData[0];
 		this.createTime = createTime;
 	}

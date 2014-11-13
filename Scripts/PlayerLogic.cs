@@ -31,6 +31,7 @@ public class PlayerLogic : Photon.MonoBehaviour
 	public GameObject guiTextureBomb;
 	public GameObject guiTextureRocket;
 	public GameObject guiTexturePowerUpSelector;
+	public GameObject guiTexturePullIn;
 
 	public GameObject playerMarker;
 	public GameObject playerSpeech;
@@ -278,6 +279,11 @@ public class PlayerLogic : Photon.MonoBehaviour
 
 			if (powerUp.GetName() == "PowerUpRocket") {
 				GameObject obj = (GameObject) Instantiate(guiTextureRocket, new Vector3(0f, 0f, 0f), Quaternion.identity);
+				texture = obj.GetComponent<GUITexture>();
+			}
+
+			if (powerUp.GetName() == "PowerUpPullIn") {
+				GameObject obj = (GameObject) Instantiate(guiTexturePullIn, new Vector3(0f, 0f, 0f), Quaternion.identity);
 				texture = obj.GetComponent<GUITexture>();
 			}
 

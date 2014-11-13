@@ -8,9 +8,11 @@ public class NetworkItemSpawner : Photon.MonoBehaviour
 	public GameObject flagItem;
 	public GameObject bombPowerUp;
 	public GameObject rocketPowerUp;
+	public GameObject pullInPowerUp;
 	public GameObject ammoPowerUp;
 	public GameObject bomb;
 	public GameObject rocket;
+	public GameObject magneticActor;
 
 	Dictionary<string, GameObject> gameObjs;
 
@@ -20,8 +22,10 @@ public class NetworkItemSpawner : Photon.MonoBehaviour
 		gameObjs.Add("PowerUpAmmo", ammoPowerUp);
 		gameObjs.Add("PowerUpBomb", bombPowerUp);
 		gameObjs.Add("PowerUpRocket", rocketPowerUp);
+		gameObjs.Add("PowerUpPullIn", pullInPowerUp);
 		gameObjs.Add("Bomb", bomb);
 		gameObjs.Add("Rocket", rocket);
+		gameObjs.Add("MagneticActor", magneticActor);
 	}
 
 	int itemID = 0;

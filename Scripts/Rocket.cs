@@ -64,6 +64,7 @@ public class Rocket : MonoBehaviour, Spawnable {
 	 * deserialization method
 	 * */
 	public void Init(int id, object[] initData, double createTime) {
+		this.id = id;
 		this.origin = (Vector3) initData[0];
 		this.destination = (Vector3) initData[1];
 		this.createTime = createTime;
