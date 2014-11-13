@@ -501,9 +501,9 @@ public class GameMain : Photon.MonoBehaviour {
 	public void CreatePowerUpOnRandomSlice(Spawnable powerUp) {
 		GameObject scriptsComp = (GameObject)GameObject.Find ("Scripts");
 		if (discs != null) {
-			PowerUpSpawner spawner = scriptsComp.GetComponent<PowerUpSpawner>();
+			NetworkItemSpawner spawner = scriptsComp.GetComponent<NetworkItemSpawner>();
 			if (spawner != null) {
-				spawner.CreatePowerUpOnRandomSlice(powerUp);
+				spawner.CreateItemOnRandomSlice(powerUp);
 			}
 		}
 	}
@@ -574,9 +574,6 @@ public class GameMain : Photon.MonoBehaviour {
 			for (int i= 0; i < numFlagItems; i++) {
 				CreatePowerUpOnRandomSlice(flag);
 			}
-			//PowerUpBomb bomb = new PowerUpBomb();
-			//PowerUpRocket rocket = new PowerUpRocket();
-			//CreatePowerUpOnUnityEngine.RandomSlice(rocket);CreatePowerUpOnUnityEngine.RandomSlice(rocket);CreatePowerUpOnUnityEngine.RandomSlice(rocket);CreatePowerUpOnUnityEngine.RandomSlice(rocket);CreatePowerUpOnUnityEngine.RandomSlice(rocket);CreatePowerUpOnUnityEngine.RandomSlice(rocket);CreatePowerUpOnUnityEngine.RandomSlice(rocket);
 		}
 		photonView.RPC ("UpdateScoreBoardRPC", PhotonTargets.All, new object[0]);
 	}

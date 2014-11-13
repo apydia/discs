@@ -40,12 +40,9 @@ public class Explosion : MonoBehaviour {
 				startPos = transform.position;
 			}
 			float timePassed = (float)(Time.time - explodeStartTime);
-			//collider.transform.localScale = startScale * (1f + (timePassed / explodeDuration) * explodeRadius);
-			//rigidbody.transform.localScale = startScale * (1f + (timePassed / explodeDuration) * explodeRadius);
 
 			transform.localScale = startScale * (1f + (timePassed / explodeDuration) * explodeRadius);
 
-			//transform.position 
 			if (timePassed > explodeDuration) {
 				GameObject.Destroy(gameObject);
 				isExploded = true;

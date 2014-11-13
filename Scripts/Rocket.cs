@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Rocket : MonoBehaviour {
+public class Rocket : MonoBehaviour, Spawnable {
 
 	public GameObject explosion;
 
@@ -39,12 +39,38 @@ public class Rocket : MonoBehaviour {
 			expl.GetComponent<Explosion>().parentTransform = gameObject.transform.parent;
 			GameObject.Destroy (gameObject);
 		}
-
 	}
-	
-	public void OnTriggerEnter(Collider other) {
-		
 
+	public int id;
+
+	public string GetName() {
+		return "Rocket";
+	}
+	/**
+	 * unique id
+	 * */
+	public int GetId() {
+		return id;
+	}
+	/*
+	 * this is a small serializable implementation
+	 * collects all data for this object, sends it over network
+	 * and passes it to the init funciton on the other side
+	 * */
+	public object[] GatherInitData() {
+		return new object[] {origin, destination};
+	}
+	/**
+	 * deserialization method
+	 * */
+	public void Init(int id, object[] initData, double createTime) {
+		this.origin = (Vector3) initData[0];
+		this.destination = (Vector3) initData[1];
+		this.createTime = createTime;
+		Start ();
+	}
+
+	public void OnTriggerEnter(Collider other) {
 		
 	}
 }

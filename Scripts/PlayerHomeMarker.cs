@@ -12,7 +12,6 @@ public class PlayerHomeMarker : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider col) {
-		Debug.Log ("testeste");
 		if (col.gameObject.tag == "Player") {
 			Debug.Log("playerID: " + col.gameObject.GetComponent<PlayerLogic>().playerID + " " + playerID);
 			if (col.gameObject.GetComponent<PlayerLogic>().playerID == playerID) {

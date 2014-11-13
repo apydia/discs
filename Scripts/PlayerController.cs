@@ -21,7 +21,6 @@ public class PlayerController : Photon.MonoBehaviour {
 		Debug.Log ("Color: " + c);
 
 		color = new Color (c.x, c.y, c.z);
-		//renderer.material.color = color;
 	}
 
 	void CreateProjectile(Vector3 destination, double startTime) {

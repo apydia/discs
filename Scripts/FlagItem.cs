@@ -48,7 +48,7 @@ public class FlagItem : Photon.MonoBehaviour, Spawnable {
 		return new object[] {playerID, color};
 	}
 
-	public void Init(int id, object[] initData) {
+	public void Init(int id, object[] initData, double spawnTime) {
 		this.id = id;
 		playerID = (int)initData[0];
 		color = (Vector3)initData[1];

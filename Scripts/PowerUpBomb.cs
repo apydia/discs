@@ -28,12 +28,14 @@ public class PowerUpBomb : MonoBehaviour, PowerUp {
 		return new object[]{};
 	}
 
-	public void Init(int id, object[] initData) {
+	public void Init(int id, object[] initData, double createTime) {
 		this.id  = id;
 	}
 
 	public void Activate(GameObject player, Vector3 pos) {
-		GameObject.Find ("Scripts").GetComponent<MayhemSpawner>().SpawnBomb(pos);
+		Bomb bomb = new Bomb();
+		bomb.position = player.transform.position;
+		GameObject.Find ("Scripts").GetComponent<NetworkItemSpawner>().Spawn(bomb, pos);
 	}
 
 	void OnTriggerEnter(Collider other) {

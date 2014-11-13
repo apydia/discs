@@ -19,5 +19,5 @@ public interface Spawnable {
 	/**
 	 * deserialization method
 	 * */
-	void Init(int id, object[] initData);
+	void Init(int id, object[] initData, double spawnTime);
 }

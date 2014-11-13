@@ -27,7 +27,7 @@ public class PowerUpAmmo : MonoBehaviour, PowerUp {
 		return new object[]{};
 	}
 	
-	public void Init(int id, object[] initData) {
+	public void Init(int id, object[] initData, double spawnTime) {
 		this.id  = id;
 	}
 

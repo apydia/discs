@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Bomb : MonoBehaviour {
+public class Bomb : MonoBehaviour, Spawnable {
 
 	public GameObject explosion;
 
@@ -38,7 +38,34 @@ public class Bomb : MonoBehaviour {
 			}
 		}
 	}
+
+	public int id;
 	
+	public string GetName() {
+		return "Bomb";
+	}
+	/**
+	 * unique id
+	 * */
+	public int GetId() {
+		return id;
+	}
+	/*
+	 * this is a small serializable implementation
+	 * collects all data for this object, sends it over network
+	 * and passes it to the init funciton on the other side
+	 * */
+	public object[] GatherInitData() {
+		return new object[] {position};
+	}
+	/**
+	 * deserialization method
+	 * */
+	public void Init(int id, object[] initData, double createTime) {
+		this.position = (Vector3) initData[0];
+		this.createTime = createTime;
+	}
+
 	// Update is called once per frame
 	void Update () {
 		if ((float)(PhotonNetwork.time - createTime) > explodeDelay) {

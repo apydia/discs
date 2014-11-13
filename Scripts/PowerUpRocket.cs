@@ -27,12 +27,15 @@ public class PowerUpRocket : MonoBehaviour, PowerUp {
 		return new object[]{};
 	}
 	
-	public void Init(int id, object[] initData) {
+	public void Init(int id, object[] initData, double spawnTime) {
 		this.id  = id;
 	}
 	
 	public void Activate(GameObject player, Vector3 pos) {
-		GameObject.Find ("Scripts").GetComponent<MayhemSpawner>().SpawnRocket(player.transform.position, pos);
+		Rocket rocket = new Rocket();
+		rocket.origin = player.transform.position;
+		rocket.destination = pos;
+		GameObject.Find ("Scripts").GetComponent<NetworkItemSpawner>().Spawn(rocket, player.transform.position);
 		//.Find ("Scripts").GetComponent<MayhemSpawner>().SpawnBomb(pos);
 	}
 	
