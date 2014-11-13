@@ -454,9 +454,11 @@ public class GameData
 		PowerUpProperty ttl = new PowerUpProperty("time to live", 1f, 20f, 5f, "secs");
 		pullInInfo.properties = new PowerUpProperty[] {strength, radius, ttl};
 
+		PowerUpInfo teleportInfo = new PowerUpInfo(10f, "PowerUpTeleport", "teleport", true);
+
 		PowerUpInfo ammoInfo = new PowerUpInfo(10f, "PowerUpAmmo", "ammo", false);
 
-		powerUps = new PowerUpInfo[] {rocketInfo, bombInfo, ammoInfo, pullInInfo};
+		powerUps = new PowerUpInfo[] {rocketInfo, bombInfo, ammoInfo, pullInInfo, teleportInfo};
 	}
 
 	public PowerUpProperty GetPowerUpProperty(string typeName, string propertyName) {
