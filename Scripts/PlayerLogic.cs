@@ -341,6 +341,11 @@ public class PlayerLogic : Photon.MonoBehaviour
 
 		float totalTimePassed = pingInSeconds + timeSinceLastUpdate;
 
+		float predictTime = totalTimePassed;
+		if (!PhotonNetwork.isMasterClient) {
+			predictTime += pingInSeconds;
+		}
+
 		if (!photonView.isMine)
 		{
 			if (this.clipName == "Walk") {
@@ -351,13 +356,7 @@ public class PlayerLogic : Photon.MonoBehaviour
 			}
 
 			Vector3 extPos;
-			if (PhotonNetwork.isMasterClient) {
-				extPos = this.correctPlayerPos + this.playerMov * pingInSeconds;
-				//extPos = Quaternion.AngleAxis(discSpeed * pingInSeconds, Vector3.up) * this.correctPlayerPos + this.playerMov * pingInSeconds;
-			} else {
-				extPos = this.correctPlayerPos + this.playerMov * totalTimePassed;
-				//extPos = Quaternion.AngleAxis(discSpeed * totalTimePassed, Vector3.up) * this.correctPlayerPos + this.playerMov * totalTimePassed;
-			}
+			extPos = this.correctPlayerPos + this.playerMov * predictTime;
 
 			float radius = Vector3.Distance(Vector3.zero, extPos);
 
@@ -367,13 +366,7 @@ public class PlayerLogic : Photon.MonoBehaviour
 				speed = 0f;
 			}
 
-			if (PhotonNetwork.isMasterClient) {
-				//extPos = this.correctPlayerPos + this.playerMov * pingInSeconds;
-				extPos = Quaternion.AngleAxis(speed * pingInSeconds, Vector3.up) * this.correctPlayerPos + this.playerMov * pingInSeconds;
-			} else {
-				//extPos = this.correctPlayerPos + this.playerMov * totalTimePassed;
-				extPos = Quaternion.AngleAxis(speed * totalTimePassed, Vector3.up) * this.correctPlayerPos + this.playerMov * totalTimePassed;
-			}
+			extPos = Quaternion.AngleAxis(speed * predictTime, Vector3.up) *  this.correctPlayerPos + this.playerMov * predictTime;
 
 			if (doPrediction) {
 
@@ -384,7 +377,7 @@ public class PlayerLogic : Photon.MonoBehaviour
 				transform.rotation = Quaternion.Lerp(transform.rotation, correctPlayerRot, Time.deltaTime * 8);
 			}
 
-			if (Vector3.Distance(transform.position, extPos) > 3f) {
+			if (Vector3.Distance(transform.position, extPos) > 10f) {
 				transform.position = extPos;
 			}
 		}
@@ -403,7 +396,7 @@ public class PlayerLogic : Photon.MonoBehaviour
 
 	[RPC]
 	public void DieRPC(int playerID) {
-		rigidbody.transform.position = new Vector3 (initX, 1f, initZ);
+		//rigidbody.transform.position = new Vector3 (initX, 1f, initZ);
 		foreach (FlagItem item in flagItems) {
 			item.Reset ();
 		}
@@ -424,6 +417,8 @@ public class PlayerLogic : Photon.MonoBehaviour
 	public void Die() {
 		rigidbody.transform.position = new Vector3(initX, 1f, initZ);
 		transform.position = new Vector3(initX, 1f, initZ);
+		rigidbody.velocity = Vector3.zero;
+		rigidbody.angularVelocity = Vector3.zero;
 
 		photonView.RPC ("DieRPC", PhotonTargets.All, this.playerID);
 	}
@@ -471,7 +466,7 @@ public class PlayerLogic : Photon.MonoBehaviour
 			stream.SendNext(transform.position);
 			stream.SendNext(transform.rotation);
 			stream.SendNext(gameObject.GetComponent<PlayerController>().clipName);
-			stream.SendNext(con.mov);
+			stream.SendNext(gameObject.rigidbody.velocity+con.mov);
 		}
 		else
 		{
