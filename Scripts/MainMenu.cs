@@ -358,10 +358,14 @@ public class MainMenu : Photon.MonoBehaviour {
 			FileStream file = File.Open (Application.persistentDataPath + "/gameInfo.dat", FileMode.Open);
 			gameData = (GameData)bf.Deserialize(file);
 			file.Close ();
+			GameData gd = new GameData();
+			// if version of GameData has changed, set defaults...
+			if (gameData.version != gd.version) {
+				gameData = new GameData();
+			}
 		} else {
 			gameData = new GameData();
 		}
-		gameData = new GameData();
 	}
 
 	void OnJoinedLobby()
@@ -412,6 +416,7 @@ public enum EMenuState {
 public class GameData
 {
 	// level
+	public int version;
 	public string playerName;
 	public float gameTime;
 	public float numDiscs;
@@ -430,6 +435,10 @@ public class GameData
 	}
 
 	public void SetDefaults() {
+
+		//remember to increase version when changing structure
+		this.version = 2;
+
 		this.playerName = "";
 		this.roomName = "";
 		this.maxDiscSpeed = 50f;
@@ -449,7 +458,7 @@ public class GameData
 		bombInfo.properties = new PowerUpProperty[] {bombTimer};
 
 		PowerUpInfo pullInInfo = new PowerUpInfo(10f, "PowerUpPullIn", "magnetic attractor", true);
-		PowerUpProperty strength = new PowerUpProperty("strength", 50f, 1000f, 200f, "");
+		PowerUpProperty strength = new PowerUpProperty("strength", 50f, 1000f, 500f, "");
 		PowerUpProperty radius = new PowerUpProperty("radius", 3f, 20f, 10f, "");
 		PowerUpProperty ttl = new PowerUpProperty("time to live", 1f, 20f, 5f, "secs");
 		pullInInfo.properties = new PowerUpProperty[] {strength, radius, ttl};
