@@ -10,10 +10,12 @@ public class NetworkItemSpawner : Photon.MonoBehaviour
 	public GameObject rocketPowerUp;
 	public GameObject pullInPowerUp;
 	public GameObject teleportPowerUp;
+	public GameObject pushAwayPowerUp;
 	public GameObject ammoPowerUp;
 	public GameObject bomb;
 	public GameObject rocket;
 	public GameObject magneticActor;
+	public GameObject pushAway;
 
 	Dictionary<string, GameObject> gameObjs;
 
@@ -25,9 +27,11 @@ public class NetworkItemSpawner : Photon.MonoBehaviour
 		gameObjs.Add("PowerUpRocket", rocketPowerUp);
 		gameObjs.Add("PowerUpPullIn", pullInPowerUp);
 		gameObjs.Add("PowerUpTeleport", teleportPowerUp);
+		gameObjs.Add("PowerUpPushAway", pushAwayPowerUp);
 		gameObjs.Add("Bomb", bomb);
 		gameObjs.Add("Rocket", rocket);
 		gameObjs.Add("MagneticActor", magneticActor);
+		gameObjs.Add("PushAway", pushAway);
 	}
 
 	int itemID = 0;
@@ -37,9 +41,9 @@ public class NetworkItemSpawner : Photon.MonoBehaviour
 		bool hasObj = gameObjs.TryGetValue(type, out prefab);
 		if (hasObj) {
 			GameObject spawned = (GameObject) Instantiate(prefab, position, rotation);
-			Type t = Type.GetType (type);
+			Type t = Type.GetType ("Spawnable");
 			Spawnable spawnable = (Spawnable)spawned.GetComponent(t);
-			spawnable.Init  (id, initData, createTime);
+			spawnable.Init (id, initData, createTime);
 			spawned.name = "PowerUp"+id;
 			return spawned;
 		} else {
@@ -56,11 +60,17 @@ public class NetworkItemSpawner : Photon.MonoBehaviour
 		if (gObject != null) {
 			gObject.transform.parent = slice.GetComponent<DiscSlice>().sliceMesh.transform;
 			float timePassed = (float)(PhotonNetwork.time - startTime );
+			float pingInSeconds = PhotonNetwork.GetPing() * 0.001f;
+			float totalTimePassed = timePassed;// + pingInSeconds;
+			float predictTime = totalTimePassed;
+			if (!PhotonNetwork.isMasterClient) {
+				predictTime += pingInSeconds;
+			}
 			if (!PhotonNetwork.isMasterClient) {
 				//timePassed -= PhotonNetwork.GetPing() * 0.001f;
 			}
 			float speed = slice.GetComponent<DiscSlice>().speed;
-			gObject.transform.position = Quaternion.AngleAxis(speed * timePassed, Vector3.up) * gObject.transform.position;
+			gObject.transform.position = Quaternion.AngleAxis(speed * predictTime, Vector3.up) * gObject.transform.position;
 		}
 	}
 
@@ -94,7 +104,6 @@ public class NetworkItemSpawner : Photon.MonoBehaviour
 	public void CreateItemOnRandomSlice(Spawnable spawnable) {
 		GameObject discs = (GameObject)GameObject.Find ("DiscsMain");
 		if (discs != null) {
-			
 			Discs discsClone = discs.GetComponent<Discs>();
 			int numDiscs = discsClone.discs.Length;
 			int randDiscs = UnityEngine.Random.Range (0, numDiscs - 1);

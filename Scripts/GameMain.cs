@@ -51,6 +51,15 @@ public class GameMain : Photon.MonoBehaviour {
 		guiText.pixelInset = rec;
 	}
 
+	public Vector3 mouseVec;
+
+	Vector3 ProjectMousePosition(Vector3 mousePos) {
+		Ray ray = Camera.main.ScreenPointToRay (mousePos);
+		RaycastHit hit;
+		Physics.Raycast(ray, out hit, Mathf.Infinity, ~(1 << 2));
+		return hit.point;
+	}
+
 	/**
 	 * displays time left in game
 	 **/
@@ -587,6 +596,8 @@ public class GameMain : Photon.MonoBehaviour {
 		if (isStarted && (float)PhotonNetwork.time - startTime < 3.1f) {
 			CountDown ();
 		}
+
+		mouseVec = ProjectMousePosition(Input.mousePosition);
 
 		if (((float)PhotonNetwork.time - startTime > 3f) && (PhotonNetwork.isMasterClient) && isStarted) {
 			if (!isInited) {

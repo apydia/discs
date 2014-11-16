@@ -437,7 +437,7 @@ public class GameData
 	public void SetDefaults() {
 
 		//remember to increase version when changing structure
-		this.version = 2;
+		this.version = 4;
 
 		this.playerName = "";
 		this.roomName = "";
@@ -465,9 +465,16 @@ public class GameData
 
 		PowerUpInfo teleportInfo = new PowerUpInfo(10f, "PowerUpTeleport", "teleport", true);
 
+		PowerUpInfo pushAwayInfo = new PowerUpInfo(10f, "PowerUpPushAway", "push away", true);
+		PowerUpProperty str = new PowerUpProperty("strength", 7000f, 15000f, 9000f, "megatons");
+		PowerUpProperty fireTime = new PowerUpProperty("fire time", 1f, 20f, 7f, "secs");
+		pushAwayInfo.properties = new PowerUpProperty[] {str, fireTime};
+
 		PowerUpInfo ammoInfo = new PowerUpInfo(10f, "PowerUpAmmo", "ammo", false);
 
-		powerUps = new PowerUpInfo[] {rocketInfo, bombInfo, ammoInfo, pullInInfo, teleportInfo};
+		//remember to increase version when changing structure
+
+		powerUps = new PowerUpInfo[] {rocketInfo, bombInfo, ammoInfo, pullInInfo, teleportInfo, pushAwayInfo};
 	}
 
 	public PowerUpProperty GetPowerUpProperty(string typeName, string propertyName) {

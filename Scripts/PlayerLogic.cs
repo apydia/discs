@@ -33,6 +33,7 @@ public class PlayerLogic : Photon.MonoBehaviour
 	public GameObject guiTexturePowerUpSelector;
 	public GameObject guiTexturePullIn;
 	public GameObject guiTextureTeleport;
+	public GameObject guiTexturePushAway;
 
 	public GameObject playerMarker;
 	public GameObject playerSpeech;
@@ -52,6 +53,7 @@ public class PlayerLogic : Photon.MonoBehaviour
 		gameObjs.Add("PowerUpRocket", guiTextureRocket);
 		gameObjs.Add("PowerUpPullIn", guiTexturePullIn);
 		gameObjs.Add("PowerUpTeleport", guiTextureTeleport);
+		gameObjs.Add("PowerUpPushAway", guiTexturePushAway);
 
 		UpdatePowerUpHUD();
 	}
@@ -318,11 +320,10 @@ public class PlayerLogic : Photon.MonoBehaviour
 		GameObject gameObj = GameObject.Find ("AmmoText");
 		gameObj.GetComponent<GUIText> ().richText = true;
 		gameObj.GetComponent<GUIText> ().text = s;
-
 	}
 
 	bool doPrediction = true;
-
+	public Vector3 extPos;
 	// Update is called once per frame
 	// TODO: better prediction model... movement relative to last position
 	void Update()
@@ -355,7 +356,6 @@ public class PlayerLogic : Photon.MonoBehaviour
 				gameObject.GetComponent<Animation>().Play (this.clipName);
 			}
 
-			Vector3 extPos;
 			extPos = this.correctPlayerPos + this.playerMov * predictTime;
 
 			float radius = Vector3.Distance(Vector3.zero, extPos);

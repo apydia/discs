@@ -50,16 +50,18 @@ public class PlayerController : Photon.MonoBehaviour {
 	}
 
 	void Update() {
+		GameMain main = GameObject.Find ("Scripts").GetComponent<GameMain>();
+
 		if (Input.GetButtonDown ("Fire1")) {
 			if (gunAmmoAmount > 0) {
-				Vector3 hitPoint = ProjectMousePosition(Input.mousePosition);
+				Vector3 hitPoint = main.mouseVec;
 				photonView.RPC ("SpawnProjectile", PhotonTargets.All, hitPoint);
 				--gunAmmoAmount;
 				gameObject.GetComponent<PlayerLogic>().UpdatePowerUpHUD();
 			}
 		}
 		if (Input.GetButtonDown ("Fire2")) {
-			Vector3 hitPoint = ProjectMousePosition(Input.mousePosition);
+			Vector3 hitPoint = main.mouseVec;
 			PowerUp pUp = gameObject.GetComponent<PlayerLogic>().UseSelectedPowerUp();
 			if (pUp != null) {
 				pUp.Activate(gameObject, hitPoint);
