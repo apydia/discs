@@ -6,6 +6,7 @@ public class MagneticActor : Photon.MonoBehaviour, Spawnable {
 	public float power;
 	public float radius;
 	public float timeToLive;
+	public string method = "linear";
 	//TODO: time to live...
 
 	float createTime;
@@ -18,6 +19,9 @@ public class MagneticActor : Photon.MonoBehaviour, Spawnable {
 	// Use this for initialization
 	void Start () {
 		this.gameObject.GetComponent<SphereCollider>().radius = radius;
+		if (createTime == 0f) {
+			createTime = (float)PhotonNetwork.time;
+		}
 		if (!effectSpawned) {
 			spawnedEffect = (GameObject)Instantiate(effect, transform.position, Quaternion.identity);
 			Vector3 pos = spawnedEffect.transform.position;
@@ -30,6 +34,7 @@ public class MagneticActor : Photon.MonoBehaviour, Spawnable {
 	// Update is called once per frame
 	void Update () {
 		if ((float)PhotonNetwork.time - createTime > timeToLive) {
+			Debug.Log ("Destroyed exloseion");
 			GameObject.Destroy(spawnedEffect.gameObject);
 			GameObject.Destroy(this.gameObject);
 		}
@@ -68,11 +73,21 @@ public class MagneticActor : Photon.MonoBehaviour, Spawnable {
 
 	void CheckCollision(Collider other) {
 		if (other.attachedRigidbody && other.gameObject.tag == "Player") {
-			float dist = Vector3.Distance(other.gameObject.transform.position, transform.position);
-			
-			Vector3 dir = other.gameObject.transform.position - transform.position;
-			other.attachedRigidbody.AddForce (dir*power/(dist));
-			//other.rigidbody.AddForce (dir);
+			if (!other.gameObject.GetComponent<PlayerLogic>().isShieldOn) {
+				float dist = Vector3.Distance(other.gameObject.transform.position, gameObject.transform.position);
+				
+				Vector3 dir = other.gameObject.transform.position - gameObject.transform.position;
+				//other.attachedRigidbody.AddForce (dir*power/(dist));
+				if (method == "linear") {
+					other.attachedRigidbody.AddForce (dir.normalized*power/(dist));
+				}
+				if (method == "quadratic") {
+					other.attachedRigidbody.AddForce (dir.normalized*power/(dist*dist));
+				}
+				if (method == "strongInMiddle") {
+					other.attachedRigidbody.AddForce (dir*power/(dist));
+				}
+			}
 		}
 	}
 
@@ -82,5 +97,13 @@ public class MagneticActor : Photon.MonoBehaviour, Spawnable {
 
 	void OnTriggerStay(Collider other) {
 		CheckCollision(other);
+	}
+
+	void OnCollisionEnter(Collision other) {
+		CheckCollision(other.collider);
+	}
+	
+	void OnCollisionStay(Collision other) {
+		CheckCollision(other.collider);
 	}
 }

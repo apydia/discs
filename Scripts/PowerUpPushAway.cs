@@ -20,7 +20,7 @@ public class PowerUpPushAway : PowerUpBase {
 		                                          0, 
 		                                          new object[]{ PhotonNetwork.player.ID, 
 																strength.val, 
-																fireTime.val} );
+																fireTime.val });
 		pa.GetComponent<PushAway>().player = player;
 		//.Find ("Scripts").GetComponent<MayhemSpawner>().SpawnBomb(pos);
 	}

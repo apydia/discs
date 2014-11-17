@@ -12,6 +12,7 @@ public class PowerUpRocket : PowerUpBase {
 		rocket.origin = player.transform.position;
 		rocket.destination = pos;
 		GameObject.Find ("Scripts").GetComponent<NetworkItemSpawner>().Spawn(rocket, player.transform.position);
+
 		//.Find ("Scripts").GetComponent<MayhemSpawner>().SpawnBomb(pos);
 	}
 }

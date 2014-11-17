@@ -24,15 +24,9 @@ public class GameMain : Photon.MonoBehaviour {
 	float gamesToWin;
 	float startTime;
 	bool isStarted = false;
-	float spawnNextPowerUpTime = 0f;
-	float spawnNextBombTime = 0f;
-	float spawnNextRocketTime = 0f;
-	float spawnNextAmmoTime = 0f;
-	int powerUpId = 0;
 	bool isInited = false;
 	bool isStopped = false;
 	bool matchEnded = false;
-	bool playersCreated = false;
 
 	void Start() {
 		players = new List<PlayerStats> ();

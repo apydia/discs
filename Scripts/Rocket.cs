@@ -28,15 +28,23 @@ public class Rocket : MonoBehaviour, Spawnable {
 
 		timeToDestination = Vector3.Distance(destination, origin) / speed;
 	}
-	
+
+	bool isExploded = false;
+
 	// Update is called once per frame
 	public void Update () {
 		float timePassed = (float)(PhotonNetwork.time - createTime);
 		transform.position = origin + (direction * timePassed * speed);
 
-		if (timePassed > timeToDestination) {
+		if (timePassed > timeToDestination && !isExploded) {
+			isExploded = true;
+			GameObject obj = GameObject.Find ("Scripts");
+			GameMain main = obj.GetComponent<GameMain>();
+			PowerUpProperty strength = main.GetPowerUpProperty("PowerUpRocket", "explosion strength");
+			PowerUpProperty radius = main.GetPowerUpProperty("PowerUpRocket", "explosion radius");
 			GameObject expl = (GameObject)Instantiate (explosion, gameObject.transform.position, Quaternion.identity);
-			expl.GetComponent<Explosion>().parentTransform = gameObject.transform.parent;
+			expl.GetComponent<Explosion>().explodeStrength = strength.val;
+			expl.GetComponent<Explosion>().explodeRadius = radius.val;
 			GameObject.Destroy (gameObject);
 		}
 	}

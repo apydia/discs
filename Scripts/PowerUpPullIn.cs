@@ -13,11 +13,10 @@ public class PowerUpPullIn : PowerUpBase {
 		PowerUpProperty attractorStrength = main.GetPowerUpProperty("PowerUpPullIn", "strength");
 		PowerUpProperty attractorRadius = main.GetPowerUpProperty("PowerUpPullIn", "radius");
 		PowerUpProperty attractorTTL = main.GetPowerUpProperty("PowerUpPullIn", "time to live");
-		MagneticActor actor = new MagneticActor();
-		actor.power = -1f*attractorStrength.val;
-		actor.radius = attractorRadius.val;
-		actor.timeToLive = attractorTTL.val;
-		GameObject.Find ("Scripts").GetComponent<NetworkItemSpawner>().Spawn(actor, pos);
-		//.Find ("Scripts").GetComponent<MayhemSpawner>().SpawnBomb(pos);
+		MagneticAttractor attractor = new MagneticAttractor();
+		attractor.power = -1f*attractorStrength.val;
+		attractor.radius = attractorRadius.val;
+		attractor.timeToLive = attractorTTL.val;
+		GameObject.Find ("Scripts").GetComponent<NetworkItemSpawner>().Spawn(attractor, pos);
 	}
 }

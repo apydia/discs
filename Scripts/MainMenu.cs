@@ -191,6 +191,8 @@ public class MainMenu : Photon.MonoBehaviour {
 	}
 
 	int selVal = 0;
+	Vector2 scrollPosition = Vector2.zero;
+	Vector2 scrollPosition2 = Vector2.zero;
 
 	void LevelBuilder(int w, int h, Event e) {
 		string[] tts = new string[] {"level","powerups","tweak"};
@@ -198,7 +200,7 @@ public class MainMenu : Photon.MonoBehaviour {
 		if (PhotonNetwork.isMasterClient) {
 			float offsetY = 90f;
 
-			selVal = GUI.Toolbar(new Rect(w/2-150, h/2-75-offsetY, 300, 20), selVal, tts);
+			selVal = GUI.Toolbar(new Rect(w/2-150, h/2-78-offsetY, 300, 20), selVal, tts);
 
 			GUI.Box (new Rect(w/2-170, h/2-55-offsetY, 340, 275),"");
 
@@ -226,34 +228,54 @@ public class MainMenu : Photon.MonoBehaviour {
 
 			// powerups
 			if (selVal == 1) {
+				scrollPosition2 = GUI.BeginScrollView(new Rect(w/2-170, h/2-55-offsetY, 340, 200), scrollPosition2, new Rect(0, 0, 320, gameData.powerUps.Length*30f+7f));
 				for (int i = 0; i < gameData.powerUps.Length; i++) {
 					PowerUpInfo cur = gameData.powerUps[i];
 					string text = "Spawn " + cur.name + " every " + cur.spawnFrequency + " secs";
 					if (cur.isDisableable && cur.spawnFrequency == 80f) {
 						text = cur.name + " disabled";
 					}
-					GUI.Label (new Rect(w/2-150, h/2-35+(float)i*30f-offsetY, 300, 12), text, "labelsmall");
-					cur.spawnFrequency = GUI.HorizontalSlider(new Rect(w/2-150, h/2-20+(float)i*30f-offsetY, 300, 25), cur.spawnFrequency, 5f, 80.0f, "horizontalslider", "horizontalsliderthumb");
+					GUI.Label (new Rect(12f, 7f+(float)i*30f, 300, 12), text, "labelsmall");
+					cur.spawnFrequency = GUI.HorizontalSlider(new Rect(12f, 7f+15f+(float)i*30f, 300, 25), cur.spawnFrequency, 5f, 80.0f, "horizontalslider", "horizontalsliderthumb");
 				}
+				GUI.EndScrollView();
 			}
 
 			// tweak
 			if (selVal == 2) {
 				float curHeight = 0;
+				// calculate height of window inside scrollbars 
+				for (int i = 0; i < gameData.powerUps.Length; i++) {
+					PowerUpInfo cur = gameData.powerUps[i];
+					for (int t = 0; t < cur.properties.Length; t++) {
+						curHeight += 30f;
+					}
+					if (cur.properties.Length > 0) {
+						curHeight += 15f;
+					}
+				}
+				curHeight += 25f;
+
+				scrollPosition = GUI.BeginScrollView(new Rect(w/2-170, h/2-55-offsetY, 340, 200), scrollPosition, new Rect(0, 0, 320, curHeight)); 
+
+				curHeight = 0;
 				for (int i = 0; i < gameData.powerUps.Length; i++) {
 					PowerUpInfo cur = gameData.powerUps[i];
 					if (cur.properties.Length != 0) {
-						GUI.Label (new Rect(w/2-150, h/2-35+curHeight-offsetY-15f, 300, 12), cur.name, "labelsmall");
+						GUI.Label (new Rect(12, 7f+curHeight, 300, 12), cur.name, "labelsmall");
 					}
 					for (int t = 0; t < cur.properties.Length; t++) {
 						PowerUpProperty prop = cur.properties[t];
 						string text = prop.name + ": " + prop.val + " " + prop.unit;
-						GUI.Label (new Rect(w/2-150, h/2-35+curHeight-offsetY, 300, 12), text, "labelsmall");
-						prop.val = GUI.HorizontalSlider(new Rect(w/2-150, h/2-20+curHeight-offsetY, 300, 25), prop.val, prop.min, prop.max, "horizontalslider", "horizontalsliderthumb");
+						GUI.Label (new Rect(12, 7f+curHeight+15f, 300, 12), text, "labelsmall");
+						prop.val = GUI.HorizontalSlider(new Rect(12, 7f+curHeight+30f, 300, 25), prop.val, prop.min, prop.max, "horizontalslider", "horizontalsliderthumb");
 						curHeight += 30f;
 					}
-					curHeight += 15f;
+					if (cur.properties.Length > 0) {
+						curHeight += 15f;
+					}
 				}
+				GUI.EndScrollView();
 			}
 
 			if (GUI.Button (new Rect(w/2-150, h/2+150-offsetY, 300, 30), "Build Discs", "button")) {
@@ -437,7 +459,7 @@ public class GameData
 	public void SetDefaults() {
 
 		//remember to increase version when changing structure
-		this.version = 4;
+		this.version = 9;
 
 		this.playerName = "";
 		this.roomName = "";
@@ -451,11 +473,15 @@ public class GameData
 
 		PowerUpInfo rocketInfo = new PowerUpInfo(10f, "PowerUpRocket", "rocket", true);
 		PowerUpProperty rocketSpeed = new PowerUpProperty("speed", 20f, 500f, 80f, "px/sec");
-		rocketInfo.properties = new PowerUpProperty[] {rocketSpeed};
+		PowerUpProperty rocketRadius = new PowerUpProperty("explosion radius", 10f, 30f, 15f, "");
+		PowerUpProperty rocketPower = new PowerUpProperty("explosion strength", 1000f, 15000f, 3500f, "");
+		rocketInfo.properties = new PowerUpProperty[] {rocketSpeed,rocketRadius,rocketPower};
 
 		PowerUpInfo bombInfo = new PowerUpInfo(10f, "PowerUpBomb", "bomb", true);
 		PowerUpProperty bombTimer = new PowerUpProperty("explosion delay", 0.5f, 7f, 3f, "secs");
-		bombInfo.properties = new PowerUpProperty[] {bombTimer};
+		PowerUpProperty bombRadius = new PowerUpProperty("explosion radius", 10f, 30f, 15f, "");
+		PowerUpProperty bombPower = new PowerUpProperty("explosion strength", 1000f, 15000f, 3500f, "");
+		bombInfo.properties = new PowerUpProperty[] {bombTimer,bombRadius,bombPower};
 
 		PowerUpInfo pullInInfo = new PowerUpInfo(10f, "PowerUpPullIn", "magnetic attractor", true);
 		PowerUpProperty strength = new PowerUpProperty("strength", 50f, 1000f, 500f, "");
@@ -470,11 +496,15 @@ public class GameData
 		PowerUpProperty fireTime = new PowerUpProperty("fire time", 1f, 20f, 7f, "secs");
 		pushAwayInfo.properties = new PowerUpProperty[] {str, fireTime};
 
+		PowerUpInfo shieldInfo = new PowerUpInfo(10f, "PowerUpShield", "shield", true);
+		PowerUpProperty duration = new PowerUpProperty("duration", 1f, 20f, 10f, "secs");
+		shieldInfo.properties = new PowerUpProperty[] {duration};
+
 		PowerUpInfo ammoInfo = new PowerUpInfo(10f, "PowerUpAmmo", "ammo", false);
 
 		//remember to increase version when changing structure
 
-		powerUps = new PowerUpInfo[] {rocketInfo, bombInfo, ammoInfo, pullInInfo, teleportInfo, pushAwayInfo};
+		powerUps = new PowerUpInfo[] {rocketInfo, bombInfo, ammoInfo, pullInInfo, teleportInfo, shieldInfo, pushAwayInfo};
 	}
 
 	public PowerUpProperty GetPowerUpProperty(string typeName, string propertyName) {

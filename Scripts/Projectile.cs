@@ -34,10 +34,11 @@ public class Projectile : MonoBehaviour {
 	}
 
 	public void OnTriggerEnter(Collider other) {
-		
 		if(other.gameObject.tag == "Player") {
 			if (playerID != other.gameObject.GetComponent<PlayerController>().playerID) {
-				other.gameObject.GetComponent<PlayerLogic>().LoseRandomFlagItem(other.gameObject.GetComponent<PlayerController>().playerID);
+				if (!other.gameObject.GetComponent<PlayerLogic>().isShieldOn) {
+					other.gameObject.GetComponent<PlayerLogic>().LoseRandomFlagItem(other.gameObject.GetComponent<PlayerController>().playerID);
+				}
 			}
 		}
 

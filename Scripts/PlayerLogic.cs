@@ -22,6 +22,13 @@ public class PlayerLogic : Photon.MonoBehaviour
 	public float initX = 0f;
 	public float initZ = 0f;
 
+	private bool _isShieldOn = false;
+	
+	public bool isShieldOn
+	{
+		get { return this._isShieldOn; }
+	}
+
 	public double lastUpdate = 0d;
 
 	public int selectedPowerUpIndex = 0;
@@ -34,11 +41,14 @@ public class PlayerLogic : Photon.MonoBehaviour
 	public GameObject guiTexturePullIn;
 	public GameObject guiTextureTeleport;
 	public GameObject guiTexturePushAway;
+	public GameObject guiTextureShield;
 
 	public GameObject playerMarker;
 	public GameObject playerSpeech;
+	public GameObject playerShield;
 
 	public GameObject speech;
+	GameObject spawnedShield;
 
 	Dictionary<string, GameObject> gameObjs;
 
@@ -54,6 +64,7 @@ public class PlayerLogic : Photon.MonoBehaviour
 		gameObjs.Add("PowerUpPullIn", guiTexturePullIn);
 		gameObjs.Add("PowerUpTeleport", guiTextureTeleport);
 		gameObjs.Add("PowerUpPushAway", guiTexturePushAway);
+		gameObjs.Add("PowerUpShield", guiTextureShield);
 
 		UpdatePowerUpHUD();
 	}
@@ -337,6 +348,20 @@ public class PlayerLogic : Photon.MonoBehaviour
 			Die ();
 		}
 
+		if ((float)PhotonNetwork.time < shieldDeactivateTime && !_isShieldOn) {
+			Vector3 p = rigidbody.transform.position;
+			spawnedShield = (GameObject) Instantiate (playerShield,  new Vector3(p.x, p.y+2f, p.z), Quaternion.identity);
+			spawnedShield.transform.parent = rigidbody.transform;
+			_isShieldOn = true;
+			//spawnedShield.GetComponent<ParticleSystem>().particleEmitter.emit=true; 
+		} else {
+			if (_isShieldOn && (float)PhotonNetwork.time > shieldDeactivateTime) {
+				GameObject.Destroy (spawnedShield.gameObject);
+				_isShieldOn = false;
+			}
+			//spawnedShield.GetComponent<ParticleSystem>().particleEmitter.emit=false;
+		}
+
 		float pingInSeconds = (float)PhotonNetwork.GetPing () * 0.001f;
 		float timeSinceLastUpdate = (float)(PhotonNetwork.time - lastUpdate);
 
@@ -392,6 +417,17 @@ public class PlayerLogic : Photon.MonoBehaviour
 			}
 		}
 		return 0f;
+	}
+	
+	float shieldDeactivateTime;
+
+	public void ActivateShield(float duration) {
+		photonView.RPC ("ActivateShieldRPC", PhotonTargets.All, duration);
+	}
+
+	[RPC]
+	void ActivateShieldRPC(float duration, PhotonMessageInfo info) {
+		shieldDeactivateTime = (float)info.timestamp + duration;
 	}
 
 	[RPC]
@@ -457,6 +493,7 @@ public class PlayerLogic : Photon.MonoBehaviour
 			speech = (GameObject) Instantiate (playerSpeech,  new Vector3(p.x, p.y + 2f * 6f, p.z), Quaternion.identity);
 			speech.transform.parent = rigidbody.transform;
 			speech.GetComponent<TextMesh>().color = color;
+
 			isInited = true;
 		}
 		PlayerController con = gameObject.GetComponent<PlayerController>();

@@ -12,9 +12,10 @@ public class NetworkItemSpawner : Photon.MonoBehaviour
 	public GameObject teleportPowerUp;
 	public GameObject pushAwayPowerUp;
 	public GameObject ammoPowerUp;
+	public GameObject shieldPowerUp;
 	public GameObject bomb;
 	public GameObject rocket;
-	public GameObject magneticActor;
+	public GameObject magneticAttractor;
 	public GameObject pushAway;
 
 	Dictionary<string, GameObject> gameObjs;
@@ -28,9 +29,10 @@ public class NetworkItemSpawner : Photon.MonoBehaviour
 		gameObjs.Add("PowerUpPullIn", pullInPowerUp);
 		gameObjs.Add("PowerUpTeleport", teleportPowerUp);
 		gameObjs.Add("PowerUpPushAway", pushAwayPowerUp);
+		gameObjs.Add("PowerUpShield", shieldPowerUp);
 		gameObjs.Add("Bomb", bomb);
 		gameObjs.Add("Rocket", rocket);
-		gameObjs.Add("MagneticActor", magneticActor);
+		gameObjs.Add("MagneticAttractor", magneticAttractor);
 		gameObjs.Add("PushAway", pushAway);
 	}
 

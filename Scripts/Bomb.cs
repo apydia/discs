@@ -70,9 +70,15 @@ public class Bomb : MonoBehaviour, Spawnable {
 	// Update is called once per frame
 	void Update () {
 		if ((float)(PhotonNetwork.time - createTime) > explodeDelay) {
-			GameObject.Destroy(gameObject);
+			GameObject obj = GameObject.Find ("Scripts");
+			GameMain main = obj.GetComponent<GameMain>();
+			PowerUpProperty strength = main.GetPowerUpProperty("PowerUpBomb", "explosion strength");
+			PowerUpProperty radius = main.GetPowerUpProperty("PowerUpBomb", "explosion radius");
 			GameObject expl = (GameObject)Instantiate (explosion, gameObject.transform.position, Quaternion.identity);
-			expl.GetComponent<Explosion>().parentTransform = gameObject.transform.parent;
+			expl.GetComponent<Explosion>().explodeStrength = strength.val;
+			expl.GetComponent<Explosion>().explodeRadius = radius.val;
+			GameObject.Destroy(gameObject);
+			//expl.GetComponent<Explosion>().parentTransform = gameObject.transform.parent;
 		}
 	}
 }
