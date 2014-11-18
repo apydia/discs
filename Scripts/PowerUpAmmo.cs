@@ -38,14 +38,14 @@ public class PowerUpAmmo : PowerUpBase {
 
 		}*/
 
-		/*
+
 		if (other.gameObject.tag == "PowerUpCrate") {
 			GameObject doomed = other.gameObject;
 			if (this.createTime > other.gameObject.GetComponent<PowerUpBase>().createTime) {
 				doomed = this.gameObject;
 			}
 			GameObject.Destroy(doomed);
-		}*/
+		}
 	}
 
 	void OnTriggerExit(Collider other) {

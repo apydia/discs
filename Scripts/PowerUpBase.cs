@@ -49,7 +49,7 @@ public class PowerUpBase : MonoBehaviour, PowerUp {
 		} else {
 			//this.gameObject.renderer.enabled = true;
 		}
-		/*
+
 		if (other.gameObject.tag == "PowerUpCrate") {
 			GameObject doomed = other.gameObject;
 			Debug.Log ("GetName(): " + GetName());
@@ -59,12 +59,14 @@ public class PowerUpBase : MonoBehaviour, PowerUp {
 			if (this.createTime > b.createTime) {
 				doomed = this.gameObject;
 			}
+			/*
 			Vector3 pos = doomed.transform.position;
 			pos.y += 5f;
 			doomed.transform.position = pos;
-			//GameObject.Destroy(doomed);
+			*/
+			GameObject.Destroy(doomed);
 			//
-		}*/
+		}
 	}
 	void OnTriggerExit(Collider other) {
 		if (other.gameObject.tag == "FlagItem") {
