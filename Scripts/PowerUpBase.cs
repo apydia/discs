@@ -12,6 +12,7 @@ public class PowerUpBase : MonoBehaviour, PowerUp {
 	// Use this for initialization
 	void Start () {
 		renderer.material.mainTexture = texture;
+		renderer.enabled = false;
 	}
 
 	public virtual string GetName() {
@@ -20,7 +21,9 @@ public class PowerUpBase : MonoBehaviour, PowerUp {
 
 	// Update is called once per frame
 	void Update () {
-		
+		if ((float)PhotonNetwork.time > createTime + 0.3f) {
+			renderer.enabled = true;
+		}
 	}
 	
 	public int GetId() {
