@@ -193,6 +193,7 @@ public class MainMenu : Photon.MonoBehaviour {
 	int selVal = 0;
 	Vector2 scrollPosition = Vector2.zero;
 	Vector2 scrollPosition2 = Vector2.zero;
+	float buildDiscsActivateTime;
 
 	void LevelBuilder(int w, int h, Event e) {
 		string[] tts = new string[] {"level","powerups","tweak"};
@@ -278,13 +279,18 @@ public class MainMenu : Photon.MonoBehaviour {
 				GUI.EndScrollView();
 			}
 
+			if (Time.time < buildDiscsActivateTime) {
+				GUI.enabled = false;
+			}
 			if (GUI.Button (new Rect(w/2-150, h/2+150-offsetY, 300, 30), "Build Discs", "button")) {
 				GameObject scripts = GameObject.Find ("Scripts");
+				buildDiscsActivateTime = Time.time + 1f;
 				if (scripts != null) {
 					GameMain main = scripts.GetComponent<GameMain>();
 					main.CreateDiscs();
 				}
 			}
+			GUI.enabled = true;
 			
 			if (GUI.Button (new Rect(w/2-150, h/2+180-offsetY, 300, 30), "Start Game", "button")) {
 				state = EMenuState.GameStarted;
