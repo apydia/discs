@@ -16,6 +16,8 @@ public class PlayerLogic : Photon.MonoBehaviour
 
 	public List<FlagItem> flagItems;
 
+	public List<Spell> spells;
+
 	public float discSpeed = 0f;
 	public int playerID;
 	public int hasFlagOfPlayer = -1;
@@ -42,6 +44,12 @@ public class PlayerLogic : Photon.MonoBehaviour
 	public GameObject guiTextureTeleport;
 	public GameObject guiTexturePushAway;
 	public GameObject guiTextureShield;
+	public GameObject guiTextureSlowDown;
+	public GameObject guiTextureBreakSpells;
+
+	public GameObject spellSlowDown;
+	public GameObject spellBreakSpells;
+	public GameObject spellTeleport;
 
 	public GameObject playerMarker;
 	public GameObject playerSpeech;
@@ -50,11 +58,13 @@ public class PlayerLogic : Photon.MonoBehaviour
 	public GameObject speech;
 	GameObject spawnedShield;
 
+	Dictionary<string, GameObject> spellObjs;
 	Dictionary<string, GameObject> gameObjs;
 
 	void Start() {
 		lastUpdate = PhotonNetwork.time;
 		flagItems = new List<FlagItem>();
+		spells = new List<Spell>();
 		powerUps = new PowerUp[8];
 		numPowerUps = 0;
 
@@ -65,6 +75,13 @@ public class PlayerLogic : Photon.MonoBehaviour
 		gameObjs.Add("PowerUpTeleport", guiTextureTeleport);
 		gameObjs.Add("PowerUpPushAway", guiTexturePushAway);
 		gameObjs.Add("PowerUpShield", guiTextureShield);
+		gameObjs.Add("PowerUpSlowDown", guiTextureSlowDown);
+		gameObjs.Add("PowerUpBreakSpells", guiTextureBreakSpells);
+
+		spellObjs = new Dictionary<string, GameObject>();
+		spellObjs.Add("SpellSlowDown", spellSlowDown);
+		spellObjs.Add("SpellBreakSpells", spellBreakSpells);
+		spellObjs.Add("SpellTeleport", spellTeleport);
 
 		UpdatePowerUpHUD();
 	}
@@ -135,12 +152,56 @@ public class PlayerLogic : Photon.MonoBehaviour
 				deleteThese.Add (flag);
 			}
 			cur++;
-			
 		}
 		
 		foreach (FlagItem flag in deleteThese) {
 			flagItems.Remove (flag);
 		}
+	}
+
+	int spellID = 0;
+
+	[RPC]
+	public void AddSpellRPC(string name, int id, object[] initData, int castingPlayer) {
+		GameObject sp;
+		bool has = spellObjs.TryGetValue(name, out sp);
+		if (has) {
+			GameObject spellObj = (GameObject)Instantiate(sp, transform.position, Quaternion.identity);
+			spellObj.transform.parent = gameObject.transform;
+			spellObj.transform.Rotate (new Vector3(-90f, 0f, 0f));
+			Type t = Type.GetType(name);
+			Spell spell = (Spell)spellObj.GetComponent(t);
+			spell.Init (id, initData, PhotonNetwork.time);
+			spell.Begin (this.gameObject);
+
+			//spells.Add (spell);
+		}
+	}
+
+	public void AddSpell(Spell spell) {
+		photonView.RPC ("AddSpellRPC", PhotonTargets.All, spell.GetName(), spellID++, spell.GatherInitData(), PhotonNetwork.player.ID);
+	}
+
+	[RPC]
+	void RemoveSpellRPC(int id) {
+		Spell spell = spells.Find (item => item.GetId() == id);
+		spells.Remove(spell);
+	}
+
+	public void RemoveSpell(int id) {
+		photonView.RPC ("RemoveSpellRPC", PhotonTargets.All, id);
+	}
+
+	[RPC]
+	public void RemoveAllSpellsRPC() {
+		foreach (Spell spell in spells) {
+			spell.Break (this.gameObject);
+		}
+		//spells = new List<Spell>();
+	}
+
+	public void RemoveAllSpells() {
+		photonView.RPC ("RemoveAllSpellsRPC", PhotonTargets.All, new object[]{});
 	}
 
 	[RPC]

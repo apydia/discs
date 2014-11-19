@@ -10,6 +10,13 @@ public class PowerUpTeleport : PowerUpBase {
 	}
 	
 	public override void Activate(GameObject player, Vector3 pos) {
+		SpellTeleport spell = new SpellTeleport();
+		spell.SetCastingPlayerID(PhotonNetwork.player.ID);
+		spell.SetReceivingPlayerID(PhotonNetwork.player.ID);
+		spell.duration = 3f;
+		spell.destination = pos;
+		player.GetComponent<PlayerLogic>().AddSpell (spell);		
+		/*
 		GameObject obj = (GameObject)Instantiate(teleportEffect, player.transform.position, Quaternion.identity);
 		obj.transform.Rotate(new Vector3(-90f, 0f, 0f));
 		player.transform.position = pos;
@@ -20,9 +27,7 @@ public class PowerUpTeleport : PowerUpBase {
 		obj.transform.Rotate(new Vector3(-90f, 0f, 0f));
 		Vector3 pos2 = obj.transform.position;
 		pos2.y = -2f;
-		obj.transform.position = pos2;
-		/*Bomb bomb = new Bomb();
-		bomb.position = player.transform.position;
-		GameObject.Find ("Scripts").GetComponent<NetworkItemSpawner>().Spawn(bomb, pos);*/
+		obj.transform.position = pos2;*/
+
 	}
 }

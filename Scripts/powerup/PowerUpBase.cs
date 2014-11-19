@@ -44,7 +44,9 @@ public class PowerUpBase : MonoBehaviour, PowerUp {
 	
 	void OnTriggerEnter(Collider other) {
 		if (other.gameObject.tag == "Player") {
-			other.gameObject.GetComponent<PlayerLogic>().PowerUpCollected(this);
+			if (other.gameObject.GetComponent<PlayerController>().playerID == PhotonNetwork.player.ID) {
+				other.gameObject.GetComponent<PlayerLogic>().PowerUpCollected(this);
+			}
 		}
 		if (other.gameObject.tag == "FlagItem") {
 			this.gameObject.renderer.enabled = false;
