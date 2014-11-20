@@ -9,7 +9,6 @@ public class RandomMatchMaker : Photon.MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
-
 		//PhotonNetwork.logLevel = PhotonLogLevel.Full;
 		if (isQuickConnect) {
 			PhotonNetwork.ConnectUsingSettings("0.1");

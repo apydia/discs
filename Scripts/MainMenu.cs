@@ -92,13 +92,16 @@ public class MainMenu : Photon.MonoBehaviour {
 		if (GUI.Button (new Rect(w/2-150, h/2-70, 300, 30), "Change name", "button")) {
 			state = EMenuState.EnterName;
 		}
+		if (!PhotonNetwork.connectedAndReady) {
+			GUI.enabled = false;
+		}
 		if (GUI.Button (new Rect(w/2-150, h/2-35, 300, 30), "Create Room", "button")) {
 			state = EMenuState.CreateRoom;
 		}
-		
 		if (GUI.Button (new Rect(w/2-150, h/2-0, 300, 30), "Join Room", "button")) {
 			state = EMenuState.JoinRoom;
 		}
+		GUI.enabled = true;
 	}
 
 	void CreateRoom(int w, int h, Event e) {
