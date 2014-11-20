@@ -107,7 +107,10 @@ public class GameMain : Photon.MonoBehaviour {
 
 	void UpdateScoreBoard() {
 		string s = "";
-		int cnt = 1;
+		for (int i = 1; i <= 4; i++) {
+			GameObject gameObj = GameObject.Find ("Score" + i);
+			gameObj.GetComponent<TextMesh> ().text = "";
+		}
 		for (int i = 0; i < PhotonNetwork.playerList.Length; i++) {
 			PhotonPlayer pp = PhotonNetwork.playerList[i];
 			PlayerStats pl = players.Find (item => item.playerID == pp.ID);
@@ -239,6 +242,15 @@ public class GameMain : Photon.MonoBehaviour {
 
 			players.Add (new PlayerStats(playerID, 0, playerName, c));
 		}
+	}
+
+	public void OnPhotonPlayerDisconnected(PhotonPlayer player) {
+		GameObject pl = GameObject.Find ("HomeMarker" + player.ID);
+		GameObject.Destroy(pl);
+		PlayerStats stats = players.Find(item => item.playerID == player.ID);
+		players.Remove(stats);
+		UpdateScoreBoard();
+		// TODO: check if alone :(
 	}
 
 	public void CreateDiscs() {

@@ -10,8 +10,7 @@ public class MainMenu : Photon.MonoBehaviour {
 	public GUISkin skin;
 
 	public EMenuState state = EMenuState.EnterName;
-
-	// TODO: read/write to NoSQL thing
+	
 	public GameData gameData;
 
 	// Use this for initialization
