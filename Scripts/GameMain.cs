@@ -225,15 +225,7 @@ public class GameMain : Photon.MonoBehaviour {
 			
 			character.initX = x;
 			character.initZ = z;
-			/*
-			GameObject flag = PhotonNetwork.Instantiate("Flag", new Vector3(x, 0.5f, z), Quaternion.identity, 0);
-			flag.GetComponent<Flag>().Init (color, playerID, x, z);
-			
-			flag.GetComponent<Flag>().color = c;
-			flag.GetComponent<Flag>().playerID = playerID;
-			flag.GetComponent<Flag>().initX = x;
-			flag.GetComponent<Flag>().initZ = z;
-			*/
+
 			if (!onlyPlayer) {
 				CreateBay(radius, rot, color, playerID);
 			}

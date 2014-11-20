@@ -57,7 +57,6 @@ public class Disc : MonoBehaviour {
 
 			if (isNetworked) {
 				sliceClone = PhotonNetwork.InstantiateSceneObject("DiscSlice", Vector3.zero, Quaternion.identity, 0, new object[0]);
-			//int id = sliceClone.GetInstanceID();
 
 				sliceClone.GetComponent<DiscSlice>().Init(innerRadius, outerRadius, curAngle, size, speed, index, i);
 			} else {

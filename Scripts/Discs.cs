@@ -24,7 +24,6 @@ public class Discs : MonoBehaviour {
 
 		Debug.Log ("start of disc");
 		createDiscs ();
-		//createBays ();
 	}
 	
 	void createDiscs() {
@@ -57,25 +56,7 @@ public class Discs : MonoBehaviour {
 
 			discs[i] = (Disc)discClone.GetComponent<Disc>();
 		}
-
-
 	}
-	/*
-	void createBays() {
-		for (int i = 0; i < 4; i++) {
-			float curRot = i * 90;
-			
-			GameObject bayClone = PhotonNetwork.Instantiate("Bay", new Vector3(0, 0, 0), Quaternion.identity, 0);
-			
-			bayClone.GetComponent<Bay>().rotation = curRot;
-			bayClone.GetComponent<Bay>().radius = radius;
-
-			float x = 33f * Mathf.Cos(Mathf.PI*(curRot-45f)/180f);
-			float z = 33f * Mathf.Sin(Mathf.PI*(curRot-45f)/180f);
-
-			PhotonNetwork.Instantiate("Flag", new Vector3(x, 0.5f, z), Quaternion.identity, 0);
-		}
-	}*/
 
 	// Update is called once per frame
 	void Update () {
