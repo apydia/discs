@@ -20,12 +20,14 @@ public class SpellTeleport : SpellBase {
 
 	public override void Break (GameObject player)
 	{
+		GameObject.Destroy(spawnedBeacon);
 		base.Break (player);
 	}
 
 	public override void End (GameObject player)
 	{
 		player.transform.position = spawnedBeacon.transform.position;
+		GameObject.Destroy(spawnedBeacon);
 		base.End (player);
 	}
 	
