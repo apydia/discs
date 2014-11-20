@@ -15,6 +15,7 @@ public class NetworkItemSpawner : Photon.MonoBehaviour
 	public GameObject shieldPowerUp;
 	public GameObject slowDownPowerUp;
 	public GameObject breakSpellsPowerUp;
+	public GameObject gemRemoverPowerUp;
 	public GameObject bomb;
 	public GameObject rocket;
 	public GameObject magneticAttractor;
@@ -34,6 +35,7 @@ public class NetworkItemSpawner : Photon.MonoBehaviour
 		gameObjs.Add("PowerUpShield", shieldPowerUp);
 		gameObjs.Add("PowerUpSlowDown", slowDownPowerUp);
 		gameObjs.Add("PowerUpBreakSpells", breakSpellsPowerUp);
+		gameObjs.Add("PowerUpGemRemover", gemRemoverPowerUp);
 		gameObjs.Add("Bomb", bomb);
 		gameObjs.Add("Rocket", rocket);
 		gameObjs.Add("MagneticAttractor", magneticAttractor);

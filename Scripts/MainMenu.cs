@@ -465,7 +465,7 @@ public class GameData
 	public void SetDefaults() {
 
 		//remember to increase version when changing structure
-		this.version = 11;
+		this.version = 12;
 
 		this.playerName = "";
 		this.roomName = "";
@@ -510,11 +510,13 @@ public class GameData
 
 		PowerUpInfo breakSpellsInfo = new PowerUpInfo(10f, "PowerUpBreakSpells", "break spells", false);
 
+		PowerUpInfo gemRemoverInfo = new PowerUpInfo(10f, "PowerUpGemRemover", "gem remover", false);
+
 		PowerUpInfo ammoInfo = new PowerUpInfo(10f, "PowerUpAmmo", "ammo", false);
 
 		//remember to increase version when changing structure
 
-		powerUps = new PowerUpInfo[] {rocketInfo, bombInfo, ammoInfo, pullInInfo, teleportInfo, shieldInfo, pushAwayInfo, slowDownInfo, breakSpellsInfo};
+		powerUps = new PowerUpInfo[] {rocketInfo, bombInfo, ammoInfo, pullInInfo, teleportInfo, shieldInfo, pushAwayInfo, slowDownInfo, breakSpellsInfo, gemRemoverInfo};
 	}
 
 	public PowerUpProperty GetPowerUpProperty(string typeName, string propertyName) {

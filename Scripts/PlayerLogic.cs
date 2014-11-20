@@ -46,10 +46,12 @@ public class PlayerLogic : Photon.MonoBehaviour
 	public GameObject guiTextureShield;
 	public GameObject guiTextureSlowDown;
 	public GameObject guiTextureBreakSpells;
+	public GameObject guiTextureGemRemover;
 
 	public GameObject spellSlowDown;
 	public GameObject spellBreakSpells;
 	public GameObject spellTeleport;
+	public GameObject spellGemRemover;
 
 	public GameObject playerMarker;
 	public GameObject playerSpeech;
@@ -77,11 +79,13 @@ public class PlayerLogic : Photon.MonoBehaviour
 		gameObjs.Add("PowerUpShield", guiTextureShield);
 		gameObjs.Add("PowerUpSlowDown", guiTextureSlowDown);
 		gameObjs.Add("PowerUpBreakSpells", guiTextureBreakSpells);
+		gameObjs.Add("PowerUpGemRemover", guiTextureGemRemover);
 
 		spellObjs = new Dictionary<string, GameObject>();
 		spellObjs.Add("SpellSlowDown", spellSlowDown);
 		spellObjs.Add("SpellBreakSpells", spellBreakSpells);
 		spellObjs.Add("SpellTeleport", spellTeleport);
+		spellObjs.Add("SpellGemRemover", spellGemRemover);
 
 		UpdatePowerUpHUD();
 	}
