@@ -14,7 +14,7 @@ public class PowerUpBreakSpells : PowerUpBase {
 		obj.GetComponent<SpellCollider>().castingPlayerID = PhotonNetwork.player.ID;
 		obj.GetComponent<SpellCollider>().spellName = "SpellBreakSpells";
 		SpellBreakSpells spell = new SpellBreakSpells();
-		spell.duration = 1f;
+		spell.duration = 3f;
 		obj.GetComponent<SpellCollider>().spell = spell;
 	}
 }

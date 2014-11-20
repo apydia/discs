@@ -10,13 +10,14 @@ public class SpellBreakSpells : SpellBase {
 	
 	public override void Begin (GameObject player)
 	{
+		player.GetComponent<PlayerLogic>().RemoveAllSpells();
 		base.Begin (player);
 	}
 	
 	public override void End (GameObject player)
 	{
-		player.GetComponent<PlayerLogic>().RemoveAllSpells();
-		base.End (player);
+		hasEnded = true;
+		GameObject.Destroy(this.gameObject);
 	}
 	
 	public override string GetName ()
