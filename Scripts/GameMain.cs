@@ -82,6 +82,7 @@ public class GameMain : Photon.MonoBehaviour {
 		isInited = false;
 		isStopped = false;
 		matchEnded = false;
+		isLevelSelectMode = false;
 		foreach (PlayerStats player in players) {
 			player.score = 0;
 		}
@@ -285,6 +286,8 @@ public class GameMain : Photon.MonoBehaviour {
 		}
 	}
 
+	bool isLevelSelectMode = true;
+
 	[RPC]
 	void LevelSelectModeRPC() {
 		if (gameNotStartedText == null) {
@@ -295,6 +298,7 @@ public class GameMain : Photon.MonoBehaviour {
 			text.beginAlpha = 0.5f;
 			gameNotStartedText.GetComponent<GUIText>().text = "Game not started yet";
 		}
+		isLevelSelectMode = true;
 		// clean up celebration mess
 		DestroyPodest();
 	}
@@ -502,6 +506,12 @@ public class GameMain : Photon.MonoBehaviour {
 			}
 			GameObject.Destroy(discsClone.gameObject);
 			GameObject.Destroy(discsClone);
+		} else {
+			GameObject[] slices = GameObject.FindGameObjectsWithTag("DiscSlice");
+			for (int i = 0; i < slices.Length; i++) {
+				PhotonNetwork.Destroy(slices[i].gameObject);
+				GameObject.Destroy(slices[i]);
+			}
 		}
 	}
 
@@ -538,6 +548,18 @@ public class GameMain : Photon.MonoBehaviour {
 			}
 		}
 		photonView.RPC ("EnablePlayerControls", PhotonTargets.All, true);
+	}
+
+	void OnMasterClientSwitched() // definitely seen when the host drops out, not sure if it's when becoming master or just when switching
+	{
+		if ( PhotonNetwork.isMasterClient ) 
+		{
+			if (isLevelSelectMode) {
+				players = new List<PlayerStats>();
+				TearItDown ();
+				RoundEnds ();
+			}
+		}
 	}
 
 	void CountDown() {
