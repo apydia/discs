@@ -63,6 +63,7 @@ public class RandomMatchMaker : Photon.MonoBehaviour
 
 	// Update is called once per frame
 	void Update () {
+		/*
 		if (Input.GetKeyDown ("space")) {
 			if (PhotonNetwork.isMasterClient) {
 				gameStarted = true;
@@ -70,7 +71,7 @@ public class RandomMatchMaker : Photon.MonoBehaviour
 				gameObject.GetComponent<GameMain>().CreateDiscs();
 				gameObject.GetComponent<GameMain>().StartGame();
 			}
-		}
+		}*/
 		if (!isQuickConnect && !gameStarted && PhotonNetwork.isMasterClient) {
 			gameStarted = true;
 			//gameObject.GetComponent<GameMain>().InitGame();

@@ -17,13 +17,18 @@ public class PlayerStats
 	public int matchWins = 0;
 	public string name = "";
 	public Color color;
+	public bool hasBeenCreated = false;
+	public Vector2 homePos;
+	public float bayAngle;
 	
-	public PlayerStats (int playerID, int score, string name, Color color)
+	public PlayerStats (int playerID, int score, string name, Color color, Vector2 homePos, float bayAngle)
 	{
 		this.playerID = playerID;
 		this.score = score;
 		this.name = name;
 		this.color = color;
+		this.homePos = homePos;
+		this.bayAngle = bayAngle;
 	}
 }
 

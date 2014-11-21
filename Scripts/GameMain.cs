@@ -27,6 +27,7 @@ public class GameMain : Photon.MonoBehaviour {
 	bool isInited = false;
 	bool isStopped = false;
 	bool matchEnded = false;
+	string state = "just_loaded";
 
 	void Start() {
 		players = new List<PlayerStats> ();
@@ -77,12 +78,18 @@ public class GameMain : Photon.MonoBehaviour {
 	}
 
 	[RPC]
+	void SetStateRPC(string state) {
+		this.state = state;
+	}
+
+	[RPC]
 	void GameStartedRPC(float gameTime, float gemsPerPlayer, PhotonMessageInfo info) {
 		isStarted = true;
 		isInited = false;
 		isStopped = false;
 		matchEnded = false;
 		isLevelSelectMode = false;
+		state = "in_game";
 		foreach (PlayerStats player in players) {
 			player.score = 0;
 		}
@@ -164,14 +171,6 @@ public class GameMain : Photon.MonoBehaviour {
 			photonView.RPC ("PlayerScoredRPC", PhotonTargets.AllViaServer, playerID, points);
 		//}
 	}
-	
-	void CreateBay(float radius, float rot, Vector3 color, int playerID) {
-		GameObject bayClone = PhotonNetwork.Instantiate("Bay", new Vector3(0, 0, 0), 
-		                                                Quaternion.identity, 0, new object[]{color, rot, radius, playerID});
-		
-		bayClone.GetComponent<Bay> ().Init (rot, radius, color, playerID);
-
-	}
 
 	public void CreatePlayers() {
 		float delta = UnityEngine.Random.Range (80f, (360f/(float)PhotonNetwork.playerList.Length)+10f);
@@ -188,7 +187,7 @@ public class GameMain : Photon.MonoBehaviour {
 			}
 			
 			PhotonPlayer player = PhotonNetwork.playerList[i];
-			
+
 			float rot = offset + delta * (float)i;
 			while (rot > 360f) {
 				rot -= 360f;
@@ -197,22 +196,24 @@ public class GameMain : Photon.MonoBehaviour {
 			Color clr = HSBColor.FromAhsb(255, rot, UnityEngine.Random.Range (0.8f, 1f), UnityEngine.Random.Range (0.4f, 0.7f));
 			Vector3 c = new Vector3(UnityEngine.Random.Range (0f, 1f),UnityEngine.Random.Range (0f, 1f),UnityEngine.Random.Range (0f, 1f));
 			c = new Vector3(clr.r/255f, clr.g/255f, clr.b/255f);
+			float x = (35f - 4f) * Mathf.Sqrt(2) * Mathf.Sin(Mathf.PI*(curRot+45f)/180f);
+			float z = (35f - 4f) * Mathf.Sqrt(2) * Mathf.Cos(Mathf.PI*(curRot+45f)/180f);
 			if (!alreadyCreated) {
-				this.GetComponent<PhotonView>().RPC("CreatePlayer", PhotonTargets.All, 35f, curRot, c, player.name, player.ID, false);
+				this.GetComponent<PhotonView>().RPC("CreatePlayer", PhotonTargets.All, 35f, curRot, c, player.name, new Vector2(x, z), player.ID, false);
 			} else {
 				PlayerStats pStats = players.Find (item => item.playerID == player.ID);
 				c = new Vector3(pStats.color.r, pStats.color.g, pStats.color.b);
-				this.GetComponent<PhotonView>().RPC("CreatePlayer", PhotonTargets.All, 35f, curRot, c, pStats.name, pStats.playerID, true);
+				this.GetComponent<PhotonView>().RPC("CreatePlayer", PhotonTargets.All, 35f, pStats.bayAngle, c, pStats.name, pStats.homePos, pStats.playerID, true);
 			}
 		}
 	}
 
 	[RPC]
-	public void CreatePlayer(float radius, float rot, Vector3 color, string playerName, int playerID, bool onlyPlayer)
+	public void CreatePlayer(float radius, float rot, Vector3 color, string playerName, Vector2 pos, int playerID, bool onlyPlayer)
 	{
 		Color c = new Color (color.x, color.y, color.z);
-		float x = (radius - 4f) * Mathf.Sqrt(2) * Mathf.Sin(Mathf.PI*(rot+45f)/180f);
-		float z = (radius - 4f) * Mathf.Sqrt(2) * Mathf.Cos(Mathf.PI*(rot+45f)/180f);
+		float x = pos.x;
+		float z = pos.y;
 		//Debug.Log("CreatePlayer " + rot + " " + c + " " + playerID);
 		if (PhotonNetwork.player.ID == playerID) {
 			GameObject player = PhotonNetwork.Instantiate ("Lumberjack3", new Vector3 (x, 33f, z), 
@@ -241,8 +242,15 @@ public class GameMain : Photon.MonoBehaviour {
 			obj.GetComponent<PlayerHomeMarker>().playerID = playerID;
 			obj.name = "HomeMarker" + playerID;
 
-			players.Add (new PlayerStats(playerID, 0, playerName, c));
+			players.Add (new PlayerStats(playerID, 0, playerName, c, new Vector2(x, z), rot));
 		}
+	}
+
+	void CreateBay(float radius, float rot, Vector3 color, int playerID) {
+		GameObject bayClone = PhotonNetwork.Instantiate("Bay", new Vector3(0, 0, 0), 
+		                                                Quaternion.identity, 0, new object[]{color, rot, radius, playerID});
+		
+		bayClone.GetComponent<Bay> ().Init (rot, radius, color, playerID);	
 	}
 
 	public void OnPhotonPlayerDisconnected(PhotonPlayer player) {
@@ -272,6 +280,7 @@ public class GameMain : Photon.MonoBehaviour {
 		CreatePlayers();
 
 		photonView.RPC ("LevelSelectModeRPC", PhotonTargets.Others, new object[0]);
+		photonView.RPC ("SetStateRPC", PhotonTargets.All, "level_select_mode");
 		DestroyPodest();
 	}
 
@@ -368,6 +377,11 @@ public class GameMain : Photon.MonoBehaviour {
 
 	[RPC]
 	void StopGameRPC(int winnerID, int matchWins, bool winsGame) {
+		if (!winsGame) {
+			state = "between_rounds";
+		} else {
+			state = "win_ceremony";
+		}
 		Debug.Log ("StopGameRPC: " + winnerID + " " + matchWins + " " + winsGame);
 		if (!isStopped) {
 			GameObject text = (GameObject) Instantiate(zoomFadeText, new Vector3(0.5f, 0.5f, 0f), Quaternion.identity);
@@ -438,7 +452,6 @@ public class GameMain : Photon.MonoBehaviour {
 			bool gameEnd = winner.matchWins == gamesToWin;
 			Debug.Log ("gamesToWin: " + gamesToWin);
 			if (gameEnd) {
-
 				newLevelTime = Time.time + 22f;
 			}
 			photonView.RPC ("StopGameRPC", PhotonTargets.All, winner.playerID, winner.matchWins, gameEnd);
@@ -555,7 +568,7 @@ public class GameMain : Photon.MonoBehaviour {
 		if ( PhotonNetwork.isMasterClient ) 
 		{
 			if (isLevelSelectMode) {
-				players = new List<PlayerStats>();
+				//players = new List<PlayerStats>();
 				TearItDown ();
 				RoundEnds ();
 			}
