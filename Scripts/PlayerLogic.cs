@@ -253,6 +253,27 @@ public class PlayerLogic : Photon.MonoBehaviour
 		photonView.RPC ("LostFlagItemRPC", PhotonTargets.All, item.id);
 	}
 
+	public void OnPhotonPlayerDisconnected(PhotonPlayer player) {
+		List<FlagItem> removeThose = new List<FlagItem>();
+		foreach (FlagItem item in flagItems) {
+			if (item.playerID == player.ID) {
+				removeThose.Add (item);
+			}
+		}
+		foreach (FlagItem item in removeThose) {
+			flagItems.Remove (item);
+		}
+		removeThose = new List<FlagItem>();
+		PutFlagItemsInSlots ();
+	}
+
+	public void LoseFlagItem(int itemId) {
+		FlagItem flagItem = flagItems.Find (item => item.id == itemId);
+		if (flagItem != null) {
+			photonView.RPC ("LostFlagItemRPC", PhotonTargets.All, itemId);
+		}
+	}
+
 	public void LoseRandomFlagItem(int playerId) {
 		if (PhotonNetwork.player.ID == playerId) {
 			int rand = UnityEngine.Random.Range (0, flagItems.Count - 1);

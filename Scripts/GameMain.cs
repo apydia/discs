@@ -258,6 +258,16 @@ public class GameMain : Photon.MonoBehaviour {
 		GameObject.Destroy(pl);
 		PlayerStats stats = players.Find(item => item.playerID == player.ID);
 		players.Remove(stats);
+		GameObject plObj = (GameObject)GameObject.Find ("Player" + PhotonNetwork.player.ID);
+
+		GameObject[] gems = GameObject.FindGameObjectsWithTag("FlagItem");
+		for (int i = 0; i < gems.Length; i++) {
+			FlagItem fl = gems[i].GetComponent<FlagItem>();
+			if (fl.playerID == player.ID) {
+				GameObject.Destroy(gems[i]);
+			}
+			//TODO: what if player is carrying flag item???
+		}
 		UpdateScoreBoard();
 		// TODO: check if alone :(
 	}
