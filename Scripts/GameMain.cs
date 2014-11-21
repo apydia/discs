@@ -216,7 +216,7 @@ public class GameMain : Photon.MonoBehaviour {
 		float z = pos.y;
 		//Debug.Log("CreatePlayer " + rot + " " + c + " " + playerID);
 		if (PhotonNetwork.player.ID == playerID) {
-			GameObject player = PhotonNetwork.Instantiate ("Lumberjack3", new Vector3 (x, 33f, z), 
+			GameObject player = PhotonNetwork.Instantiate ("Lumberjack3", new Vector3 (x, 2f, z), 
 			                                               Quaternion.identity, 0, new object[]{color, playerID});
 			PlayerController controller = player.GetComponent<PlayerController>();
 			controller.enabled = true;
