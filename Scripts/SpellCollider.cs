@@ -13,6 +13,9 @@ public class SpellCollider : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		Vector3 pos = transform.position;
+		pos.y = 5;
+		transform.position = pos;
 		castTime = Time.time;
 	}
 
@@ -31,10 +34,10 @@ public class SpellCollider : MonoBehaviour {
 	}
 	
 	void OnTriggerEnter(Collider other) {
-		if (other.gameObject.tag == "Player") {
-			Debug.Log ("spell cast on player: " + other.gameObject.GetComponent<PlayerController>().playerID);
+		if (other.gameObject.tag == "PlayerSelectCollider") {
+			Debug.Log ("spell cast on player: " + other.gameObject.GetComponent<PlayerSelectCollider>());
 			GameObject playerCasting = GameObject.Find ("Player"+this.castingPlayerID);
-			Cast (playerCasting, other.gameObject);
+			Cast (playerCasting, other.gameObject.GetComponent<PlayerSelectCollider>().player);
 		}
 	}
 

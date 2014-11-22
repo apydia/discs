@@ -55,6 +55,7 @@ public class PlayerLogic : Photon.MonoBehaviour
 
 	public GameObject playerMarker;
 	public GameObject playerSpeech;
+	public GameObject playerSelectCollider;
 	public GameObject playerShield;
 
 	public GameObject speech;
@@ -282,9 +283,11 @@ public class PlayerLogic : Photon.MonoBehaviour
 	}
 
 	public void LoseRandomFlagItem(int playerId) {
-		if (PhotonNetwork.player.ID == playerId) {
-			int rand = UnityEngine.Random.Range (0, flagItems.Count - 1);
-			LostFlagItem(flagItems.ToArray()[rand]);
+		if (flagItems.Count > 0) {
+			if (PhotonNetwork.player.ID == playerId) {
+				int rand = UnityEngine.Random.Range (0, flagItems.Count - 1);
+				LostFlagItem(flagItems.ToArray()[rand]);
+			}
 		}
 	}
 
@@ -538,6 +541,9 @@ public class PlayerLogic : Photon.MonoBehaviour
 	[RPC]
 	public void DieRPC(int playerID) {
 		//rigidbody.transform.position = new Vector3 (initX, 1f, initZ);
+		rigidbody.velocity = Vector3.zero;
+		rigidbody.angularVelocity = Vector3.zero;
+
 		foreach (FlagItem item in flagItems) {
 			item.Reset ();
 		}
@@ -604,6 +610,10 @@ public class PlayerLogic : Photon.MonoBehaviour
 			GameObject marker = (GameObject) Instantiate (playerMarker,  new Vector3(p.x, p.y + 1.5f * 6f, p.z), Quaternion.identity);
 			marker.transform.parent = rigidbody.transform;
 			marker.renderer.material.color = color;
+
+			GameObject coll = (GameObject) Instantiate (playerSelectCollider,  new Vector3(p.x, p.y + 1.5f * 2f, p.z), Quaternion.identity);
+			coll.transform.parent = rigidbody.transform;
+			coll.GetComponent<PlayerSelectCollider>().player = this.gameObject;
 
 			speech = (GameObject) Instantiate (playerSpeech,  new Vector3(p.x, p.y + 2f * 6f, p.z), Quaternion.identity);
 			speech.transform.parent = rigidbody.transform;

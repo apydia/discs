@@ -26,8 +26,10 @@ public class PlayerController : Photon.MonoBehaviour {
 	}
 
 	void CreateProjectile(Vector3 destination, double startTime) {
-		GameObject projectile = (GameObject) Instantiate (proj, transform.position, Quaternion.identity); 
-		projectile.GetComponent<Projectile>().origin = rigidbody.position; 
+		Vector3 pos = rigidbody.position;
+		pos.y = 3;
+		GameObject projectile = (GameObject) Instantiate (proj, pos, Quaternion.identity); 
+		projectile.GetComponent<Projectile>().origin = pos; 
 		projectile.GetComponent<Projectile>().destination = destination; 
 		projectile.GetComponent<Projectile>().createTime = startTime; 
 		projectile.GetComponent<Projectile>().playerID = playerID; 
