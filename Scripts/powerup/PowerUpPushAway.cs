@@ -3,6 +3,8 @@ using System.Collections;
 
 public class PowerUpPushAway : PowerUpBase {
 
+	GameObject pa;
+
 	public override string GetName() {
 		return "PowerUpPushAway";
 	}
@@ -14,7 +16,7 @@ public class PowerUpPushAway : PowerUpBase {
 		PowerUpProperty fireTime = main.GetPowerUpProperty("PowerUpPushAway", "fire time");
 
 		//GameObject.Find ("Scripts").GetComponent<NetworkItemSpawner>().Spawn(pushAway, player.transform.position);
-		GameObject pa = PhotonNetwork.Instantiate("PushAway", 
+		pa = PhotonNetwork.Instantiate("PushAway", 
 		                                          player.transform.position, 
 		                                          Quaternion.identity, 
 		                                          0, 
@@ -22,6 +24,12 @@ public class PowerUpPushAway : PowerUpBase {
 																strength.val, 
 																fireTime.val });
 		pa.GetComponent<PushAway>().player = player;
+		pa.name = "PushAway" + GetId ();
 		//.Find ("Scripts").GetComponent<MayhemSpawner>().SpawnBomb(pos);
+	}
+
+	public override void DeActivate(GameObject player) {
+		//GameObject o = GameObject.Find ("PushAway" + GetId ());
+		pa.GetComponent<PushAway>().Kill ();
 	}
 }

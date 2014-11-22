@@ -41,7 +41,10 @@ public class PowerUpBase : MonoBehaviour, PowerUp {
 	
 	public virtual void Activate(GameObject player, Vector3 pos) {
 	}
-	
+
+	public virtual void DeActivate(GameObject player) {
+	}
+
 	void OnTriggerEnter(Collider other) {
 		if (other.gameObject.tag == "Player") {
 			if (other.gameObject.GetComponent<PlayerController>().playerID == PhotonNetwork.player.ID) {

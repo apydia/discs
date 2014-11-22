@@ -189,7 +189,9 @@ public class PlayerLogic : Photon.MonoBehaviour
 	[RPC]
 	void RemoveSpellRPC(int id) {
 		Spell spell = spells.Find (item => item.GetId() == id);
-		spells.Remove(spell);
+		if (spell != null) {
+			spells.Remove(spell);
+		}
 	}
 
 	public void RemoveSpell(int id) {
@@ -198,8 +200,13 @@ public class PlayerLogic : Photon.MonoBehaviour
 
 	[RPC]
 	public void RemoveAllSpellsRPC() {
+		List<Spell> spellsToRemove = new List<Spell>();
 		foreach (Spell spell in spells) {
+			spellsToRemove.Add (spell);
+		}
+		foreach (Spell spell in spellsToRemove) {
 			spell.Break (this.gameObject);
+			spells.Remove (spell);
 		}
 		//spells = new List<Spell>();
 	}
@@ -336,6 +343,8 @@ public class PlayerLogic : Photon.MonoBehaviour
 		return null;
 	}
 
+	List<PowerUp> usedPowerUps = new List<PowerUp>();
+
 	public PowerUp UseSelectedPowerUp() {
 		PowerUp pUp = GetSelectedPowerUp();
 		if (pUp != null) {
@@ -349,6 +358,7 @@ public class PlayerLogic : Photon.MonoBehaviour
 
 		}
 		UpdatePowerUpHUD();
+		usedPowerUps.Add (pUp);
 		return pUp;
 	}
 
@@ -511,6 +521,15 @@ public class PlayerLogic : Photon.MonoBehaviour
 		photonView.RPC ("ActivateShieldRPC", PhotonTargets.All, duration);
 	}
 
+	public void DeActivateShield() {
+		photonView.RPC ("DeActivateShieldRPC", PhotonTargets.All);
+	}
+
+	[RPC]
+	void DeActivateShieldRPC() {
+		shieldDeactivateTime = 0f;
+	}
+
 	[RPC]
 	void ActivateShieldRPC(float duration, PhotonMessageInfo info) {
 		shieldDeactivateTime = (float)info.timestamp + duration;
@@ -523,8 +542,18 @@ public class PlayerLogic : Photon.MonoBehaviour
 			item.Reset ();
 		}
 
+		foreach (PowerUp powerUp in usedPowerUps) {
+			if (powerUp != null) {
+				powerUp.DeActivate(this.gameObject);
+			}
+		}
+
+		RemoveAllSpells();
+
+		usedPowerUps = new List<PowerUp>();
 		flagItems = new List<FlagItem>();
 		powerUps = new PowerUp[8];
+		//spells = new List<Spell>();
 		numPowerUps = 0;
 		selectedPowerUpIndex = 0;
 

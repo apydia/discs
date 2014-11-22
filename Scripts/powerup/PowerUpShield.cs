@@ -14,4 +14,8 @@ public class PowerUpShield : PowerUpBase {
 
 		player.GetComponent<PlayerLogic>().ActivateShield(duration.val);
 	}
+
+	public override void DeActivate(GameObject player) {
+		player.GetComponent<PlayerLogic>().DeActivateShield();
+	}
 }
