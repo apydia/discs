@@ -270,6 +270,12 @@ public class GameMain : Photon.MonoBehaviour {
 		}
 		UpdateScoreBoard();
 		// TODO: check if alone :(
+
+		if (PhotonNetwork.playerList.Length == 1) {
+			// TODO: display message that you are alone and this is fatal....
+			PhotonNetwork.LeaveRoom();
+			Application.LoadLevel("Menu");
+		}
 	}
 
 	public void CreateDiscs() {
