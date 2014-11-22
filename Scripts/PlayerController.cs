@@ -11,6 +11,8 @@ public class PlayerController : Photon.MonoBehaviour {
 
 	public int gunAmmoAmount = 20;
 
+	public bool defaultGunEnabled = false;
+
 	void Start () {
 		Physics.gravity = new Vector3(0, -120.0f, 0);
 		PhotonNetwork.sendRate = 40;
@@ -39,7 +41,6 @@ public class PlayerController : Photon.MonoBehaviour {
 			timestamp = info.timestamp;
 		}
 		CreateProjectile (destination, timestamp);
-		
 	}
 
 	Vector3 ProjectMousePosition(Vector3 mousePos) {
@@ -52,7 +53,7 @@ public class PlayerController : Photon.MonoBehaviour {
 	void Update() {
 		GameMain main = GameObject.Find ("Scripts").GetComponent<GameMain>();
 
-		if (Input.GetButtonDown ("Fire1")) {
+		if (Input.GetButtonDown ("Fire1") && defaultGunEnabled) {
 			if (gunAmmoAmount > 0) {
 				Vector3 hitPoint = main.mouseVec;
 				photonView.RPC ("SpawnProjectile", PhotonTargets.All, hitPoint);

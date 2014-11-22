@@ -138,6 +138,15 @@ public class GameMain : Photon.MonoBehaviour {
 	}
 
 	[RPC]
+	void EnableDefaultGun(bool enable) {
+		GameObject player = GameObject.Find ("Player"+PhotonNetwork.player.ID);
+		if (player != null) {
+			PlayerController controller = player.GetComponent<PlayerController>();
+			controller.defaultGunEnabled = enable;
+		}
+	}
+
+	[RPC]
 	public void PlayerScoredRPC(int playerID, int points) {
 		PlayerStats playerStats = players.Find (item => item.playerID == playerID);
 		if (playerStats != null) {
@@ -296,6 +305,7 @@ public class GameMain : Photon.MonoBehaviour {
 		CreatePlayers();
 
 		photonView.RPC ("LevelSelectModeRPC", PhotonTargets.Others, new object[0]);
+		photonView.RPC ("EnableDefaultGun", PhotonTargets.AllViaServer, false);
 		photonView.RPC ("SetStateRPC", PhotonTargets.All, "level_select_mode");
 		DestroyPodest();
 	}
@@ -352,6 +362,7 @@ public class GameMain : Photon.MonoBehaviour {
 		photonView.RPC ("GameStartedRPC", PhotonTargets.AllViaServer, gameDuration, gameData.numFlagItems);
 		photonView.RPC ("ResetPlayers", PhotonTargets.AllViaServer, new object[0]);
 		photonView.RPC ("EnablePlayerControls", PhotonTargets.AllViaServer, false);
+		photonView.RPC ("EnableDefaultGun", PhotonTargets.AllViaServer, false);
 
 	}
 
@@ -451,6 +462,7 @@ public class GameMain : Photon.MonoBehaviour {
 			}
 		);
 		photonView.RPC ("EnablePlayerControls", PhotonTargets.All, false);
+		photonView.RPC ("EnableDefaultGun", PhotonTargets.AllViaServer, false);
 		bool isTie = false;
 
 		PlayerStats[] stats = players.ToArray ();
@@ -577,6 +589,7 @@ public class GameMain : Photon.MonoBehaviour {
 			}
 		}
 		photonView.RPC ("EnablePlayerControls", PhotonTargets.All, true);
+		photonView.RPC ("EnableDefaultGun", PhotonTargets.AllViaServer, false);
 	}
 
 	void OnMasterClientSwitched() // definitely seen when the host drops out, not sure if it's when becoming master or just when switching
@@ -613,6 +626,7 @@ public class GameMain : Photon.MonoBehaviour {
 
 	void InitGame() {
 		photonView.RPC ("EnablePlayerControls", PhotonTargets.AllViaServer, true);
+		photonView.RPC ("EnableDefaultGun", PhotonTargets.AllViaServer, true);
 		isInited = true;
 		GameData gameData = GetGameData();
 		
