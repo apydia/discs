@@ -51,7 +51,7 @@ public class GameMain : Photon.MonoBehaviour {
 	Vector3 ProjectMousePosition(Vector3 mousePos) {
 		Ray ray = Camera.main.ScreenPointToRay (mousePos);
 		RaycastHit hit;
-		Physics.Raycast(ray, out hit, Mathf.Infinity, ~(1 << 2));
+		Physics.Raycast(ray, out hit, Mathf.Infinity, (1 << 8));
 		return hit.point;
 	}
 
@@ -376,17 +376,17 @@ public class GameMain : Photon.MonoBehaviour {
 				return p2.matchWins - p1.matchWins; 
 			}
 		);
-		int winnerMatchWins = players.ToArray ()[0].matchWins;
+		int winnerMatchWins = players.ToArray ()[0].matchWins+1;
 		float offsetZ = (float)((players.Count+1) % 2) * 4f;
 		foreach (PlayerStats player in players) {
 			float zPos = Mathf.Ceil(cnt/2f) * 8f * (Mathf.Pow (-1, cnt))+offsetZ;
 			Vector3 pos = new Vector3(12f, 2f, zPos);
 			GameObject podest = (GameObject)Instantiate (podestCube, pos, Quaternion.identity);
 			podest.GetComponent<Scaler>().startScale = new Vector3(8f,0f,8f);
-			podest.GetComponent<Scaler>().destScale = new Vector3(8f,4f*(float)player.matchWins/(float)winnerMatchWins*4f,8f);
+			podest.GetComponent<Scaler>().destScale = new Vector3(8f,4f*(float)(player.matchWins+1)/(float)winnerMatchWins*4f,8f);
 			podest.GetComponent<Scaler>().speed = 12f;
 			podest.GetComponent<Mover>().startPos = new Vector3(12f,2f,zPos);
-			podest.GetComponent<Mover>().destination = new Vector3(12f,2f*(float)player.matchWins/(float)winnerMatchWins*4f,zPos);
+			podest.GetComponent<Mover>().destination = new Vector3(12f,2f*(float)(player.matchWins+1)/(float)winnerMatchWins*4f,zPos);
 			podest.GetComponent<Mover>().speed = 6f;
 			++cnt;
 			if (player.playerID == PhotonNetwork.player.ID) {
