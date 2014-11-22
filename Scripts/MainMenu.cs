@@ -19,6 +19,12 @@ public class MainMenu : Photon.MonoBehaviour {
 		PhotonNetwork.ConnectUsingSettings("0.1");
 
 		LoadGameData();
+
+		GameObject comingFromGame = GameObject.Find ("ComingFromGame");
+		if (comingFromGame != null) {
+			state = comingFromGame.GetComponent<ComingFromGame>().switchToThisState;
+			Debug.Log (inGame + " " + gameStarted);
+		}
 	}
 	
 	void OnGUI() {
@@ -52,6 +58,10 @@ public class MainMenu : Photon.MonoBehaviour {
 			FirstRoundSettings(w, h, e);
 		}
 
+		if (state == EMenuState.SettingsMenu) {
+			SettingsMenu(w, h, e);
+		}
+
 		if (state == EMenuState.RoundSettings && !show_chat_window) {
 			LevelBuilder(w, h, e);
 		}
@@ -77,7 +87,7 @@ public class MainMenu : Photon.MonoBehaviour {
 			state = EMenuState.MainMenu;
 			PhotonNetwork.playerName = gameData.playerName.Trim();
 		} else {
-			GUI.Label (new Rect(w/2-150, h/2-70, 300, 30), "Enter thy name", "label");
+			GUI.Label (new Rect(w/2-150, h/2-70, 300, 40), "Enter thy name", "label");
 			gameData.playerName = GUI.TextField(new Rect(w/2-150, h/2-30, 300, 38), gameData.playerName, 25, "textfield");
 		}
 		if (gameData.playerName.Trim() == "") {
@@ -86,7 +96,7 @@ public class MainMenu : Photon.MonoBehaviour {
 	}
 
 	void MainMenuState(int w, int h, Event e) {
-		GUI.Label (new Rect(w/2-150, h/2-130, 300, 30), "Main Menu", "label");
+		GUI.Label (new Rect(w/2-150, h/2-130, 300, 40), "Main Menu", "label");
 		
 		if (GUI.Button (new Rect(w/2-150, h/2-70, 300, 30), "Change name", "button")) {
 			state = EMenuState.EnterName;
@@ -110,7 +120,7 @@ public class MainMenu : Photon.MonoBehaviour {
 			PhotonNetwork.CreateRoom(gameData.roomName);
 			
 		} else {
-			GUI.Label (new Rect(w/2-150, h/2-130, 300, 30), "Create Room", "label");
+			GUI.Label (new Rect(w/2-150, h/2-130, 300, 40), "Create Room", "label");
 			
 			gameData.roomName = GUI.TextField(new Rect(w/2-150, h/2-90, 300, 38), gameData.roomName, 25, "textfield");
 			
@@ -126,7 +136,7 @@ public class MainMenu : Photon.MonoBehaviour {
 	}
 
 	void JoinRoom(int w, int h, Event e) {
-		GUI.Label (new Rect(w/2-150, h/2-130, 300, 30), "Pick A Room To Join", "label");
+		GUI.Label (new Rect(w/2-150, h/2-130, 300, 40), "Pick A Room To Join", "label");
 		
 		RoomInfo[] rooms = PhotonNetwork.GetRoomList();
 		for (int i = 0; i < rooms.Length; i++) {
@@ -147,11 +157,11 @@ public class MainMenu : Photon.MonoBehaviour {
 	}
 
 	void WaitingForPlayers(int w, int h, Event e) {
-		GUI.Label (new Rect(w/2-150, h/2-130, 300, 30), "Waiting For Players", "label");
+		GUI.Label (new Rect(w/2-150, h/2-130, 300, 40), "Waiting For Players", "label");
 		
 		PhotonPlayer[] players = PhotonNetwork.playerList;
 		for (int i = 0; i < players.Length; i++) {
-			GUI.Label (new Rect(w/2-150, h/2-90+35*i, 300, 30), players[i].name, "label");
+			GUI.Label (new Rect(w/2-150, h/2-90+35*i, 300, 40), players[i].name, "label");
 		}
 		
 		if (GUI.Button (new Rect(w/2-150, h/2+85, 300, 30), "Back", "button")) {
@@ -177,7 +187,7 @@ public class MainMenu : Photon.MonoBehaviour {
 			SaveGameData();
 			
 		} else {
-			GUI.Label (new Rect(w/2-150, h/2-130, 300, 30), "Match Settings", "label");
+			GUI.Label (new Rect(w/2-150, h/2-130, 300, 40), "Match Settings", "label");
 			
 			GUI.Label (new Rect(w/2-150, h/2-35, 300, 12), "win " + (int)Mathf.Round (gameData.gamesToWin) + " rounds to win game" , "labelsmall");
 			gameData.gamesToWin = GUI.HorizontalSlider(new Rect(w/2-150, h/2-20, 300, 25), gameData.gamesToWin, 1f, 9f, "horizontalslider", "horizontalsliderthumb");
@@ -185,10 +195,25 @@ public class MainMenu : Photon.MonoBehaviour {
 			if (GUI.Button (new Rect(w/2-150, h/2+120, 300, 30), "Setup Level", "button")) {
 				state = EMenuState.RoundSettings;
 			}
-			
-			if (GUI.Button (new Rect(w/2-150, h/2+150, 300, 30), "Back", "button")) {
-				state = EMenuState.MainMenu;
+		}
+	}
+
+	bool inGame = false;
+
+	void SettingsMenu(int w, int h, Event e) {
+		GUI.Label (new Rect(w/2-150, h/2-130, 300, 40), "Main Menu", "label");
+		if (inGame) {
+			if (GUI.Button (new Rect(w/2-150, h/2-55, 300, 30), "Leave Room", "button")) {
+				PhotonNetwork.LeaveRoom();
+				Application.LoadLevel("Menu");
 			}
+		}
+		if (GUI.Button (new Rect(w/2-150, h/2-20, 300, 30), "Quit", "button")) {
+			Application.Quit();
+		}
+		if (GUI.Button (new Rect(w/2-150, h/2+30, 300, 30), "Back", "button")) {
+			showSettingsMenu = !showSettingsMenu;
+			ShowSettingsMenu();
 		}
 	}
 
@@ -363,6 +388,7 @@ public class MainMenu : Photon.MonoBehaviour {
 		if (!PhotonNetwork.isMasterClient) {
 			state = EMenuState.GameStarted;
 		}
+		inGame = true;
 		Application.LoadLevel("MainGame");
 	}
 
@@ -431,7 +457,23 @@ public class MainMenu : Photon.MonoBehaviour {
 		    && !talk_mode) {
 			show_chat_window = !show_chat_window;
 		}
+		if (Input.GetKeyUp(KeyCode.Escape)) {
+			showSettingsMenu = !showSettingsMenu;
+			ShowSettingsMenu();
+		}
 	}
+
+	void ShowSettingsMenu() {
+		if (showSettingsMenu) {
+			previousState = state;
+			state = EMenuState.SettingsMenu;
+		} else {
+			state = previousState;
+		}
+	}
+
+	bool showSettingsMenu = false;
+	EMenuState previousState;
 
 	bool show_chat_window = false;
 	bool talk_mode = false;
@@ -439,7 +481,7 @@ public class MainMenu : Photon.MonoBehaviour {
 }
 
 public enum EMenuState {
-	EnterName, MainMenu, CreateRoom, JoinRoom, WaitingForPlayers, MatchSettings, RoundSettings, GameStarted
+	EnterName, MainMenu, CreateRoom, JoinRoom, WaitingForPlayers, MatchSettings, RoundSettings, GameStarted, SettingsMenu
 }
 
 [Serializable]
