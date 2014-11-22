@@ -34,9 +34,11 @@ public class FlagItem : Photon.MonoBehaviour, Spawnable {
 			GameMain gameMain = GameObject.Find ("Scripts").GetComponent<GameMain>();
 			gameMain.CreatePowerUpOnRandomSlice(flag);
 		}
-		if (this.gameObject != null) {
-			this.gameObject.transform.parent = null;
-			GameObject.Destroy(this.gameObject);
+		if (this != null) {
+			if (this.gameObject != null) {
+				this.gameObject.transform.parent = null;
+				GameObject.Destroy(this.gameObject);
+			}
 		}
 	}
 

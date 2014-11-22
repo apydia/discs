@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class Projectile : MonoBehaviour {
@@ -8,18 +8,30 @@ public class Projectile : MonoBehaviour {
 	public double createTime = 0;
 	public int playerID;
 
-	public float speed = 30f;
+	public float speed = 300f;
 
 	public float timeToLive = 10f;
 
 	private Vector3 direction;
 
 	public void Start () {
-		direction = (destination - origin);
-		direction.Normalize ();
-	
 		speed = 30f;
 		timeToLive = 10f;
+
+		direction = (destination - origin);
+		direction.Normalize ();
+		/*
+		float timePassed = (float)(PhotonNetwork.time - createTime);
+		RaycastHit obstacleHit;
+		Physics.Raycast(origin, direction, out obstacleHit, timePassed * speed, 1 << 12);
+		if (obstacleHit.collider != null) {
+			Debug.Log (obstacleHit.distance + " " +obstacleHit.collider.gameObject + " " +obstacleHit.collider.tag);
+			if (obstacleHit.collider.tag == "Player") {
+				Debug.Log ("hit player");
+			}
+		}
+*/
+		//&&  ObstacleHit.transform != OurShip && ObstacleHit.transform == Objective);
 	}
 	
 	// Update is called once per frame

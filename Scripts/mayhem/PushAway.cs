@@ -34,6 +34,14 @@ public class PushAway : Photon.MonoBehaviour {
 		CheckCollision(other);
 	}
 
+	public void Kill() {
+		if (photonView.isMine) {
+			PhotonNetwork.Destroy (this.gameObject);
+		} else {
+			GameObject.Destroy(spawnedEffect.gameObject);
+		}
+	}
+
 	bool isInited = false;
 	int playerID;
 	GameObject spawnedEffect; 
@@ -59,11 +67,7 @@ public class PushAway : Photon.MonoBehaviour {
 
 		float timePassed = (float)PhotonNetwork.time - createTime;
 		if (timePassed > fireTime) {
-			if (photonView.isMine) {
-				PhotonNetwork.Destroy (this.gameObject);
-			} else {
-				GameObject.Destroy(spawnedEffect.gameObject);
-			}
+			Kill();
 		}
 
 		if (player != null) {

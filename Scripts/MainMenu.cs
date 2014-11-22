@@ -23,7 +23,8 @@ public class MainMenu : Photon.MonoBehaviour {
 		GameObject comingFromGame = GameObject.Find ("ComingFromGame");
 		if (comingFromGame != null) {
 			state = comingFromGame.GetComponent<ComingFromGame>().switchToThisState;
-			Debug.Log (inGame + " " + gameStarted);
+			gameStarted = false;
+			inGame = false;
 		}
 	}
 	
