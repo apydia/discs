@@ -58,6 +58,8 @@ public class PlayerLogic : Photon.MonoBehaviour
 	public GameObject playerSelectCollider;
 	public GameObject playerShield;
 
+	public GameObject respawnEffect;
+
 	public GameObject speech;
 	GameObject spawnedShield;
 
@@ -234,7 +236,6 @@ public class PlayerLogic : Photon.MonoBehaviour
 
 	[RPC]
 	public void LostFlagItemRPC(int itemId) {
-		Debug.Log ("LostFlagItemRPC: " + itemId + ", playerID: " + playerID);
 		GameObject flagItem = GameObject.Find ("PowerUp"+itemId);
 		if (flagItem != null) {
 			//if (flagItem.GetComponent<FlagItem>().capturedByPlayer == playerID) {
@@ -245,7 +246,6 @@ public class PlayerLogic : Photon.MonoBehaviour
 				if (idx != -1) {
 					flagItems.RemoveAt(idx);
 				}
-				Debug.Log ("Lost item, now: " + flagItems.Count);
 				if (flagItem.GetComponent<FlagItem>() != null) {
 					flagItem.GetComponent<FlagItem>().Reset();
 				}
@@ -253,7 +253,7 @@ public class PlayerLogic : Photon.MonoBehaviour
 				PutFlagItemsInSlots();
 			//}
 		} else {
-			Debug.Log ("flag-item was already destroyed...");
+			Debug.LogError ("flag-item was already destroyed...");
 		}
 	}
 
@@ -292,8 +292,9 @@ public class PlayerLogic : Photon.MonoBehaviour
 	}
 
 	public void LoseAllFlagItems() {
-		foreach (FlagItem item in flagItems) {
-			LostFlagItem(item);
+		FlagItem[] items = flagItems.ToArray();
+		for (int i = 0; i < items.Length; i++) {
+			LostFlagItem(items[i]);
 		}
 	}
 
@@ -334,7 +335,6 @@ public class PlayerLogic : Photon.MonoBehaviour
 		if (selectedPowerUpIndex == -1) {
 			selectedPowerUpIndex = numPowerUps - 1;
 		}
-		Debug.Log (selectedPowerUpIndex);
 		UpdatePowerUpHUD();
 	}
 
@@ -342,7 +342,6 @@ public class PlayerLogic : Photon.MonoBehaviour
 		if (numPowerUps > 0) {
 			selectedPowerUpIndex = (selectedPowerUpIndex + 1) % numPowerUps;
 		}
-		Debug.Log (selectedPowerUpIndex);
 		UpdatePowerUpHUD();
 	}
 
@@ -449,11 +448,19 @@ public class PlayerLogic : Photon.MonoBehaviour
 	{
 		if (Input.GetKeyDown (KeyCode.KeypadEnter)) {
 			doPrediction = !doPrediction;
-			Debug.Log (doPrediction + " doPred");
 		}
 
-		if (photonView.isMine && rigidbody.transform.position.y < -33f) {
+		if (photonView.isMine && rigidbody.transform.position.y < -33f && !didDie) {
 			Die ();
+		}
+
+		if (photonView.isMine && Time.time > respawnTime && didDie) {
+			rigidbody.transform.position = new Vector3(initX, 1f, initZ);
+		    transform.position = new Vector3(initX, 1f, initZ);
+		    rigidbody.velocity = Vector3.zero;
+		    rigidbody.angularVelocity = Vector3.zero;
+
+			didDie = false;
 		}
 
 		if ((float)PhotonNetwork.time < shieldDeactivateTime && !_isShieldOn) {
@@ -548,7 +555,7 @@ public class PlayerLogic : Photon.MonoBehaviour
 	}
 
 	[RPC]
-	public void DieRPC(int playerID) {
+	public void DieRPC(int playerID, float initX, float initZ) {
 		//rigidbody.transform.position = new Vector3 (initX, 1f, initZ);
 		rigidbody.velocity = Vector3.zero;
 		rigidbody.angularVelocity = Vector3.zero;
@@ -556,7 +563,9 @@ public class PlayerLogic : Photon.MonoBehaviour
 		foreach (FlagItem item in flagItems) {
 			item.Reset ();
 		}
-
+		if(initX != 0f || initZ != 0f) {
+			Instantiate(respawnEffect, new Vector3(initX, 0f, initZ), Quaternion.identity);
+		}
 		foreach (PowerUp powerUp in usedPowerUps) {
 			if (powerUp != null) {
 				powerUp.DeActivate(this.gameObject);
@@ -580,13 +589,15 @@ public class PlayerLogic : Photon.MonoBehaviour
 		}
 	}
 
-	public void Die() {
-		rigidbody.transform.position = new Vector3(initX, 1f, initZ);
-		transform.position = new Vector3(initX, 1f, initZ);
-		rigidbody.velocity = Vector3.zero;
-		rigidbody.angularVelocity = Vector3.zero;
+	float respawnTime;
+	bool didDie = false;
 
-		photonView.RPC ("DieRPC", PhotonTargets.All, this.playerID);
+	public void Die() {
+
+		didDie = true;
+		respawnTime = Time.time + 1f;
+
+		photonView.RPC ("DieRPC", PhotonTargets.All, this.playerID, initX, initZ);
 	}
 
 	[RPC]
