@@ -303,7 +303,7 @@ public class PlayerLogic : Photon.MonoBehaviour
 		if (powerUp != null) {
 			GameObject.Destroy (powerUp);
 		}
-		UpdatePowerUpHUD();
+		//UpdatePowerUpHUD();
 	}
 
 	[RPC]
@@ -327,11 +327,20 @@ public class PlayerLogic : Photon.MonoBehaviour
 		photonView.RPC ("PowerUpDestroyedRPC", PhotonTargets.All, itemId);
 	}
 
-	public void SelectNextPowerUp() {
-		int len = numPowerUps;
+	public void SelectPrevPowerUp() {
+		if (numPowerUps > 0) {
+			selectedPowerUpIndex--;
+		}
+		if (selectedPowerUpIndex == -1) {
+			selectedPowerUpIndex = numPowerUps - 1;
+		}
+		Debug.Log (selectedPowerUpIndex);
+		UpdatePowerUpHUD();
+	}
 
-		if (len > 0) {
-			selectedPowerUpIndex = (selectedPowerUpIndex + 1) % len;
+	public void SelectNextPowerUp() {
+		if (numPowerUps > 0) {
+			selectedPowerUpIndex = (selectedPowerUpIndex + 1) % numPowerUps;
 		}
 		Debug.Log (selectedPowerUpIndex);
 		UpdatePowerUpHUD();
