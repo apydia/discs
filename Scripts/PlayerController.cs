@@ -20,7 +20,6 @@ public class PlayerController : Photon.MonoBehaviour {
 
 		Vector3 c = (Vector3)photonView.instantiationData [0];
 		playerID = (int)photonView.instantiationData [1];
-		Debug.Log ("Color: " + c);
 
 		color = new Color (c.x, c.y, c.z);
 	}
@@ -71,7 +70,11 @@ public class PlayerController : Photon.MonoBehaviour {
 			}
 		}
 		if (Input.GetKeyDown (KeyCode.Tab)) {
-			gameObject.GetComponent<PlayerLogic>().SelectNextPowerUp();
+			if (Input.GetKeyDown (KeyCode.LeftShift)) {
+				gameObject.GetComponent<PlayerLogic>().SelectPrevPowerUp();
+			} else {
+				gameObject.GetComponent<PlayerLogic>().SelectNextPowerUp();
+			}
 		}
 	}
 
