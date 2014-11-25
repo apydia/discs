@@ -432,7 +432,7 @@ public class MainMenu : Photon.MonoBehaviour {
 	
 	void OnPhotonRandomJoinFailed()
 	{		
-		Debug.Log("Can't join random room!");
+		Debug.LogError("Can't join random room!");
 	}
 	
 	void OnCreatedRoom()
@@ -444,6 +444,8 @@ public class MainMenu : Photon.MonoBehaviour {
 	{
 
 	}
+
+	//TODO: more network events!!!
 
 	// Update is called once per frame
 	void Update () {

@@ -34,7 +34,9 @@ public class GameMain : Photon.MonoBehaviour {
 
 		int w = Screen.width;
 		int h = Screen.height;
-		
+		if (!PhotonNetwork.isMasterClient) {
+			//GameObject.Find ("DreadedDread").GetComponent<AudioSource>().mute = true;
+		}
 		GameObject objAmmo = GameObject.Find ("AmmoThingyGUITexture");
 		GUITexture guiText = objAmmo.GetComponent<GUITexture>();
 		
@@ -92,6 +94,11 @@ public class GameMain : Photon.MonoBehaviour {
 		state = "in_game";
 		foreach (PlayerStats player in players) {
 			player.score = 0;
+		}
+
+		//TODO: this has to go
+		if (!PhotonNetwork.isMasterClient) {
+			//GameObject.Find ("DreadedDread").GetComponent<AudioSource>().mute = true;
 		}
 		// what?! why does scriptsmain menu have to be available to
 		// set gameDuration from the variable passed to here???!!
@@ -409,7 +416,7 @@ public class GameMain : Photon.MonoBehaviour {
 		} else {
 			state = "win_ceremony";
 		}
-		Debug.Log ("StopGameRPC: " + winnerID + " " + matchWins + " " + winsGame);
+
 		if (!isStopped) {
 			GameObject text = (GameObject) Instantiate(zoomFadeText, new Vector3(0.5f, 0.5f, 0f), Quaternion.identity);
 			text.GetComponent<FlashyTextGUITexture>().fadeOutTime = 1f;
@@ -420,7 +427,6 @@ public class GameMain : Photon.MonoBehaviour {
 			if (winnerID != -1) {
 				PlayerStats winner = players.Find( item => item.playerID == winnerID );
 				winner.matchWins = matchWins;
-				Debug.Log ("winnerID: " + winnerID + " winner.playerID: " + winner.playerID);
 				GameObject obj = GameObject.Find ("Score" + winnerID);
 				//obj.transform.localScale = new Vector3(30f, 30f, 30f);
 				GameObject cam = GameObject.Find ("Main Camera");
@@ -478,7 +484,6 @@ public class GameMain : Photon.MonoBehaviour {
 		if (!isTie) {
 			++winner.matchWins;
 			bool gameEnd = winner.matchWins == gamesToWin;
-			Debug.Log ("gamesToWin: " + gamesToWin);
 			if (gameEnd) {
 				newLevelTime = Time.time + 22f;
 			}
@@ -525,7 +530,9 @@ public class GameMain : Photon.MonoBehaviour {
 	[RPC]
 	void TearItDownRPC() {
 		GameObject player = GameObject.Find ("Player" + PhotonNetwork.player.ID);
-		PhotonNetwork.Destroy(player);
+		if (player != null) {
+			PhotonNetwork.Destroy(player);
+		}
 	}
 
 	void TearItDown() {
@@ -539,19 +546,25 @@ public class GameMain : Photon.MonoBehaviour {
 				int numSlices = d.slices.Length;
 				for (int t = 0; t < numSlices; t++) {
 					DiscSlice slice = d.slices[t];
-					PhotonNetwork.Destroy(slice.gameObject);
-					GameObject.Destroy(slice);
+					if (slice != null) {
+						PhotonNetwork.Destroy(slice.gameObject);
+						GameObject.Destroy(slice);
+					}
 				}
 				GameObject.Destroy(d.gameObject);
 				GameObject.Destroy(d);
 			}
-			GameObject.Destroy(discsClone.gameObject);
-			GameObject.Destroy(discsClone);
+			if (discsClone != null) {
+				GameObject.Destroy(discsClone.gameObject);
+				GameObject.Destroy(discsClone);
+			}
 		} else {
 			GameObject[] slices = GameObject.FindGameObjectsWithTag("DiscSlice");
 			for (int i = 0; i < slices.Length; i++) {
-				PhotonNetwork.Destroy(slices[i].gameObject);
-				GameObject.Destroy(slices[i]);
+				if (slices[i] != null) {
+					PhotonNetwork.Destroy(slices[i].gameObject);
+					GameObject.Destroy(slices[i]);
+				}
 			}
 		}
 	}

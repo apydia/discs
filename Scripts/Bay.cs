@@ -140,27 +140,11 @@ public class Bay : Photon.MonoBehaviour {
 
 	}
 	
-	void OnTriggerEnter(Collider other) {
-		//Debug.Log ("test");
-		if (other.tag == "Player") {
-			Debug.Log("player");
-		}
-	}
-	
 	void OnCollisionEnter(Collision col) {
 		
 		if (col.gameObject.tag == "Player") {
-			//Debug.Log ("test");
 			col.transform.parent = bayMesh.transform;
 		}
-	}
-	
-	void OnCollisionExit(Collision col){
-		/*
-		if (col.gameObject.tag == "Player") {
-			Debug.Log ("test out");
-			col.transform.parent = null;
-		}*/
 	}
 	
 	bool isInited = false;

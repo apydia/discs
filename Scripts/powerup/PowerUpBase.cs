@@ -60,7 +60,6 @@ public class PowerUpBase : MonoBehaviour, PowerUp {
 
 		if (other.gameObject.tag == "PowerUpCrate") {
 			GameObject doomed = other.gameObject;
-			//Debug.Log ("GetName(): " + GetName());
 
 			Type t = Type.GetType ("PowerUpBase");
 			PowerUpBase b = (PowerUpBase)other.gameObject.GetComponent(t);

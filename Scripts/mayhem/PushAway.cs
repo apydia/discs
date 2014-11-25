@@ -36,7 +36,9 @@ public class PushAway : Photon.MonoBehaviour {
 
 	public void Kill() {
 		if (photonView.isMine) {
-			PhotonNetwork.Destroy (this.gameObject);
+			if (this.gameObject != null) {
+				PhotonNetwork.Destroy (this.gameObject);
+			}
 		} else {
 			GameObject.Destroy(spawnedEffect.gameObject);
 		}

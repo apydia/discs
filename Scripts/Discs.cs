@@ -21,8 +21,6 @@ public class Discs : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
-		Debug.Log ("start of disc");
 		createDiscs ();
 	}
 	

@@ -81,9 +81,7 @@ public class Disc : MonoBehaviour {
 	}
 
 	public void markSlice() {
-
 		int rand = Random.Range (0, numSlices-1);
-		Debug.Log ("markSlice " + rand + " " + slices.Length);
 		slices [rand].mark ();
 	}
 

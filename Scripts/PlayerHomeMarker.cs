@@ -13,9 +13,7 @@ public class PlayerHomeMarker : MonoBehaviour {
 
 	void OnTriggerEnter(Collider col) {
 		if (col.gameObject.tag == "Player") {
-			Debug.Log("playerID: " + col.gameObject.GetComponent<PlayerLogic>().playerID + " " + playerID);
 			if (col.gameObject.GetComponent<PlayerLogic>().playerID == playerID) {
-				Debug.Log ("player (bay): " + playerID);
 				//TODO: how to avoid this accessing global variables??
 				GameObject scriptsMainMenu = (GameObject) GameObject.Find ("ScriptsMainMenu");
 				int numFlagItems = 3;
@@ -38,7 +36,6 @@ public class PlayerHomeMarker : MonoBehaviour {
 					}
 				}
 				if (score > 0) {
-					Debug.Log ("player scored (bay): " + playerID);
 					GameObject.Find("Scripts").GetComponent<GameMain>().PlayerScored(playerID, score*score);
 				}
 			}

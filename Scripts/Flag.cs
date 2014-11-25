@@ -37,7 +37,6 @@ public class Flag : Photon.MonoBehaviour {
 
 	[RPC]
 	void ResetFlag(int playerID) {
-		Debug.Log ("esetFlag: " + playerID + " flag.playerID, " + this.playerID);
 		if (this.playerID == playerID) {
 			transform.parent = null;
 

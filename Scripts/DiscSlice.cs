@@ -39,7 +39,7 @@ public class DiscSlice : Photon.MonoBehaviour {
 
 		if (sliceMesh == null)
 		{
-			Debug.LogError("ProceduralTerrain requires its target sliceMesh to be assigned.");
+			Debug.LogError("DiscSlice requires its target sliceMesh to be assigned.");
 		}
 
 		lastTime = Time.time;
@@ -226,7 +226,6 @@ public class DiscSlice : Photon.MonoBehaviour {
 	void Update () {
 		if (Input.GetKeyDown (KeyCode.KeypadEnter)) {
 			doPrediction = !doPrediction;
-			Debug.Log (doPrediction + " doPred");
 		}
 
 		float delta = speed * Time.deltaTime;
@@ -249,17 +248,9 @@ public class DiscSlice : Photon.MonoBehaviour {
 			}
 		} 
 	}
-	
-	void OnTriggerEnter(Collider other) {
-		//Debug.Log ("test");
-		if (other.tag == "Player") {
-			Debug.Log("player");
-		}
-	}
 
 	void OnCollisionEnter(Collision col) {
 		if(col.gameObject.tag == "Player") {
-			//Debug.Log ("test");
 			//mark();
 			col.gameObject.GetComponent<PlayerLogic>().discSpeed = this.speed;
 			col.transform.parent = sliceMesh.transform;
@@ -269,7 +260,6 @@ public class DiscSlice : Photon.MonoBehaviour {
 
 	void OnCollisionStay(Collision col) {
 		if(col.gameObject.tag == "Player") {
-			//Debug.Log ("test");
 			//mark();
 			col.gameObject.GetComponent<PlayerLogic>().discSpeed = this.speed;
 			col.transform.parent = sliceMesh.transform;
@@ -278,9 +268,7 @@ public class DiscSlice : Photon.MonoBehaviour {
 	}
 	
 	void OnCollisionExit(Collision col) {
-		
 		if (col.gameObject.tag == "Player") {
-			//Debug.Log ("test out");
 			col.gameObject.GetComponent<PlayerLogic>().discSpeed = 0f;
 			col.transform.parent = null;
 		}

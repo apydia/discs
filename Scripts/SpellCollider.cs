@@ -35,7 +35,6 @@ public class SpellCollider : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider other) {
 		if (other.gameObject.tag == "PlayerSelectCollider") {
-			Debug.Log ("spell cast on player: " + other.gameObject.GetComponent<PlayerSelectCollider>());
 			GameObject playerCasting = GameObject.Find ("Player"+this.castingPlayerID);
 			Cast (playerCasting, other.gameObject.GetComponent<PlayerSelectCollider>().player);
 		}

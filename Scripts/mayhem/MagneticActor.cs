@@ -34,7 +34,6 @@ public class MagneticActor : Photon.MonoBehaviour, Spawnable {
 	// Update is called once per frame
 	void Update () {
 		if ((float)PhotonNetwork.time - createTime > timeToLive) {
-			Debug.Log ("Destroyed exloseion");
 			GameObject.Destroy(spawnedEffect.gameObject);
 			GameObject.Destroy(this.gameObject);
 		}

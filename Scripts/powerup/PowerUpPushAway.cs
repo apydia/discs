@@ -30,6 +30,8 @@ public class PowerUpPushAway : PowerUpBase {
 
 	public override void DeActivate(GameObject player) {
 		//GameObject o = GameObject.Find ("PushAway" + GetId ());
-		pa.GetComponent<PushAway>().Kill ();
+		if (pa != null) {
+			pa.GetComponent<PushAway>().Kill ();
+		}
 	}
 }

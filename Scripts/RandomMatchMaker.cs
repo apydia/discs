@@ -36,14 +36,13 @@ public class RandomMatchMaker : Photon.MonoBehaviour
 	void OnPhotonRandomJoinFailed()
 	{
 		if (isQuickConnect) {
-			Debug.Log("Can't join random room!");
+			Debug.LogError("Can't join random room!");
 			PhotonNetwork.CreateRoom(null);
 		}
 	}
 	
 	void OnCreatedRoom()
 	{
-		Debug.Log ("created");
 
 	}
 
