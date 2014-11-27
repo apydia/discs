@@ -52,7 +52,8 @@ public class PowerUpBase : MonoBehaviour, PowerUp {
 			}
 		}
 		if (other.gameObject.tag == "FlagItem") {
-			this.gameObject.renderer.enabled = false;
+			//this.gameObject.renderer.enabled = false;
+			renderer.material.color = new Color(1f, 1f, 1f, 0.3f);
 			//GameObject.Destroy(this.gameObject);
 		} else {
 			//this.gameObject.renderer.enabled = true;
@@ -75,8 +76,19 @@ public class PowerUpBase : MonoBehaviour, PowerUp {
 			//
 		}
 	}
+
+	void OnTriggerStay(Collider other) {
+		if (other.gameObject.tag == "FlagItem") {
+			renderer.material.color = new Color(1f, 1f, 1f, 0.3f);
+			this.gameObject.renderer.enabled = true;
+			//GameObject.Destroy(this.gameObject);
+		} 
+		
+	}
+
 	void OnTriggerExit(Collider other) {
 		if (other.gameObject.tag == "FlagItem") {
+			renderer.material.color = new Color(1f, 1f, 1f, 1f);
 			this.gameObject.renderer.enabled = true;
 			//GameObject.Destroy(this.gameObject);
 		} 

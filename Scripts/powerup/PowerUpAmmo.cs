@@ -15,11 +15,9 @@ public class PowerUpAmmo : PowerUpBase {
 			other.gameObject.GetComponent<PlayerLogic>().PowerUpDestroyed(id);
 		}
 		if (other.gameObject.tag == "FlagItem") {
-			this.gameObject.renderer.enabled = false;
+			renderer.material.color = new Color(1f, 1f, 1f, 0.3f);
 			//GameObject.Destroy(this.gameObject);
-		} else {
-			this.gameObject.renderer.enabled = true;
-		}
+		} 
 		/*
 		if (other.gameObject.tag == "PowerUpCrate") {
 			GameObject doomed = other.gameObject;
@@ -48,9 +46,17 @@ public class PowerUpAmmo : PowerUpBase {
 		}
 	}
 
+	void OnTriggerStay(Collider other) {
+		if (other.gameObject.tag == "FlagItem") {
+			renderer.material.color = new Color(1f, 1f, 1f, 0.3f);
+			//GameObject.Destroy(this.gameObject);
+		} 
+		
+	}
+
 	void OnTriggerExit(Collider other) {
 		if (other.gameObject.tag == "FlagItem") {
-			this.gameObject.renderer.enabled = true;
+			renderer.material.color = new Color(1f, 1f, 1f, 1f);
 			//GameObject.Destroy(this.gameObject);
 		} 
 
