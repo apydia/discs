@@ -396,32 +396,37 @@ public class MainMenu : Photon.MonoBehaviour {
 	public bool gameStarted = false;
 
 	void SaveGameData() {
-		FileStream file = null;
-		if (!File.Exists(Application.persistentDataPath + "/gameInfo.dat")) {
-			file = File.Create (Application.persistentDataPath + "/gameInfo.dat");
-		} else {
-			file = File.Open (Application.persistentDataPath + "/gameInfo.dat", FileMode.Open);
-		}
-		BinaryFormatter bf = new BinaryFormatter();
+		PlayerPrefs prefs = new PlayerPrefs();
 
-		bf.Serialize(file, gameData);
-		file.Close ();
+		if (!Application.isWebPlayer) {
+			FileStream file = null;
+			if (!File.Exists(Application.persistentDataPath + "/gameInfo.dat")) {
+				file = File.Create (Application.persistentDataPath + "/gameInfo.dat");
+			} else {
+				file = File.Open (Application.persistentDataPath + "/gameInfo.dat", FileMode.Open);
+			}
+			BinaryFormatter bf = new BinaryFormatter();
+
+			bf.Serialize(file, gameData);
+			file.Close ();
+		}
 	}
 
 	void LoadGameData() {
-		//TODO: if new powerup is created defaults need to be used
-		if (File.Exists(Application.persistentDataPath + "/gameInfo.dat")) {
-			BinaryFormatter bf = new BinaryFormatter();
-			FileStream file = File.Open (Application.persistentDataPath + "/gameInfo.dat", FileMode.Open);
-			gameData = (GameData)bf.Deserialize(file);
-			file.Close ();
-			GameData gd = new GameData();
-			// if version of GameData has changed, set defaults...
-			if (gameData.version != gd.version) {
-				gameData = new GameData();
+		gameData = new GameData();
+		if (!Application.isWebPlayer) {
+			//TODO: if new powerup is created defaults need to be used
+			if (File.Exists(Application.persistentDataPath + "/gameInfo.dat")) {
+				BinaryFormatter bf = new BinaryFormatter();
+				FileStream file = File.Open (Application.persistentDataPath + "/gameInfo.dat", FileMode.Open);
+				gameData = (GameData)bf.Deserialize(file);
+				file.Close ();
+				GameData gd = new GameData();
+				// if version of GameData has changed, set defaults...
+				if (gameData.version != gd.version) {
+					gameData = new GameData();
+				}
 			}
-		} else {
-			gameData = new GameData();
 		}
 	}
 
