@@ -69,13 +69,22 @@ public class PlayerController : Photon.MonoBehaviour {
 				pUp.Activate(gameObject, hitPoint);
 			}
 		}
-		if (Input.GetKeyDown (KeyCode.Tab)) {
-			if (Input.GetKeyDown (KeyCode.LeftShift)) {
-				gameObject.GetComponent<PlayerLogic>().SelectPrevPowerUp();
-			} else {
-				gameObject.GetComponent<PlayerLogic>().SelectNextPowerUp();
-			}
+
+		float upDown = Input.GetAxis("Mouse ScrollWheel");
+
+		if (Input.GetKeyDown (KeyCode.E)) {
+			gameObject.GetComponent<PlayerLogic>().SelectNextPowerUp();
 		}
+		if (Input.GetKeyDown (KeyCode.Q)) {
+			gameObject.GetComponent<PlayerLogic>().SelectPrevPowerUp();
+		}
+
+		if (upDown < 0) {
+			gameObject.GetComponent<PlayerLogic>().SelectPrevPowerUp();
+		} else if (upDown > 0){
+			gameObject.GetComponent<PlayerLogic>().SelectNextPowerUp();
+		}
+
 	}
 
 	public string clipName = "Idle";

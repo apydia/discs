@@ -307,6 +307,25 @@ public class PlayerLogic : Photon.MonoBehaviour
 		//UpdatePowerUpHUD();
 	}
 
+	void OrderPowerUpsByType() {
+		String curType = powerUps[selectedPowerUpIndex].GetName ();
+		Array.Sort(powerUps, delegate(PowerUp pUp1, PowerUp pUp2) {
+			if (pUp1 == null) {
+				return 1;
+			}
+			if (pUp2 == null) {
+				return -1;
+			}
+			return pUp1.GetName().CompareTo(pUp2.GetName());
+		});
+		for (int i = 0; i < powerUps.Length; i++) {
+			if (powerUps[i].GetName() == curType) {
+				selectedPowerUpIndex = i;
+				return;
+			}
+		}
+	}
+
 	[RPC]
 	public void PowerUpCollectedRPC(string type, int itemId) {
 		if (numPowerUps < 8) {
@@ -314,6 +333,7 @@ public class PlayerLogic : Photon.MonoBehaviour
 			Type t = Type.GetType(type);
 			PowerUp p = (PowerUp) powerUp.GetComponent(t);
 			this.powerUps[numPowerUps++] =  p;
+			OrderPowerUpsByType();
 			UpdatePowerUpHUD();
 
 			photonView.RPC ("PowerUpDestroyedRPC", PhotonTargets.All, itemId);
@@ -328,19 +348,45 @@ public class PlayerLogic : Photon.MonoBehaviour
 		photonView.RPC ("PowerUpDestroyedRPC", PhotonTargets.All, itemId);
 	}
 
+	public void SelectFirstPowerUpOfType(string type) {
+		for (int i = 0; i < numPowerUps; i++) {
+			if (powerUps[i].GetName () == type) {
+				selectedPowerUpIndex = i;
+				return;
+			}
+		}
+	}
+
 	public void SelectPrevPowerUp() {
 		if (numPowerUps > 0) {
-			selectedPowerUpIndex--;
+			String curType = powerUps[selectedPowerUpIndex].GetName ();
+			for (int i = selectedPowerUpIndex; i > selectedPowerUpIndex - numPowerUps; i--) {
+				int cur = i;
+				if (cur == -1) {
+					cur = numPowerUps - 1;
+				}
+				if (powerUps[cur].GetName () != curType) {
+					SelectFirstPowerUpOfType(powerUps[cur].GetName ());
+					break;
+				}
+			}
+			//selectedPowerUpIndex--;
 		}
-		if (selectedPowerUpIndex == -1) {
-			selectedPowerUpIndex = numPowerUps - 1;
-		}
+
 		UpdatePowerUpHUD();
 	}
 
 	public void SelectNextPowerUp() {
 		if (numPowerUps > 0) {
-			selectedPowerUpIndex = (selectedPowerUpIndex + 1) % numPowerUps;
+			String curType = powerUps[selectedPowerUpIndex].GetName ();
+			for (int i = selectedPowerUpIndex; i < selectedPowerUpIndex + numPowerUps; i++) {
+				int cur = i % numPowerUps;
+				if (powerUps[cur].GetName () != curType) {
+					selectedPowerUpIndex = cur;
+					break;
+				}
+			}
+			//selectedPowerUpIndex = (selectedPowerUpIndex + 1) % numPowerUps;
 		}
 		UpdatePowerUpHUD();
 	}
@@ -359,6 +405,7 @@ public class PlayerLogic : Photon.MonoBehaviour
 	public PowerUp UseSelectedPowerUp() {
 		PowerUp pUp = GetSelectedPowerUp();
 		if (pUp != null) {
+			string type = pUp.GetName ();
 			for (int i = selectedPowerUpIndex; i < numPowerUps - 1; i++) {
 				powerUps[i] = powerUps[i+1];
 			}
@@ -366,7 +413,7 @@ public class PlayerLogic : Photon.MonoBehaviour
 			if (selectedPowerUpIndex > 0) {
 				--selectedPowerUpIndex;
 			}
-
+			SelectFirstPowerUpOfType(type);
 		}
 		UpdatePowerUpHUD();
 		usedPowerUps.Add (pUp);
@@ -398,7 +445,7 @@ public class PlayerLogic : Photon.MonoBehaviour
 		int w = Screen.width;
 		int h = Screen.height;
 
-		float curX = w/2 - 4 * 37;
+		float curX = w/2 - (1f+numPowerUps/2f) * 37;
 
 		for (int cnt = 0; cnt < numPowerUps; cnt++) {
 			PowerUp powerUp = powerUps[cnt];
