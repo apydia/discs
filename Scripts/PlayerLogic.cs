@@ -397,7 +397,9 @@ public class PlayerLogic : Photon.MonoBehaviour
 
 		int w = Screen.width;
 		int h = Screen.height;
-		
+
+		float curX = w/2 - 4 * 37;
+
 		for (int cnt = 0; cnt < numPowerUps; cnt++) {
 			PowerUp powerUp = powerUps[cnt];
 			GUITexture texture = null;
@@ -412,9 +414,18 @@ public class PlayerLogic : Photon.MonoBehaviour
 			if (texture != null) {
 				Rect rect = new Rect(texture.pixelInset);
 				
+				//texture.color = new Color(1f, 1f, 1f, 0.5f);
 				rect.x = w - 35;
 				rect.y = h - (37*cnt) - 80;
-				
+
+
+
+				rect.x = (curX); 
+				rect.y = 8;
+				if (cnt == selectedPowerUpIndex) {
+					rect.width = 64f;
+					rect.height = 64f;
+				}
 				texture.pixelInset = rect;
 
 				if (cnt == selectedPowerUpIndex) {
@@ -426,8 +437,13 @@ public class PlayerLogic : Photon.MonoBehaviour
 					r.x = w - 62;
 					r.y = h - (37*cnt) - 85;
 
+					r.x = curX - 10; 
+					r.y = -2;
+
 					selector.pixelInset = r;
+					curX += 37f;
 				}
+				curX += 37f;
 			}
 		}
 
