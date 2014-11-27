@@ -23,6 +23,7 @@ public class GameMain : Photon.MonoBehaviour {
 
 	float gamesToWin;
 	float startTime;
+	int roundsToWinGame;
 	bool isStarted = false;
 	bool isInited = false;
 	bool isStopped = false;
@@ -76,6 +77,8 @@ public class GameMain : Photon.MonoBehaviour {
 			int secs = Mathf.FloorToInt(timeLeft % 60f);
 			string sexString = secs < 10 ? "0" + secs : secs+"";
 			GUI.Label (new Rect((float)w/2f-100f, 0f, 200f, 38f), mins+":"+sexString);
+
+			GUI.Label (new Rect(2f, 0f, 200f, 38f), "win " + this.roundsToWinGame + " rounds to win game", "labelsmall");
 		}
 	}
 
@@ -85,7 +88,7 @@ public class GameMain : Photon.MonoBehaviour {
 	}
 
 	[RPC]
-	void GameStartedRPC(float gameTime, float gemsPerPlayer, PhotonMessageInfo info) {
+	void GameStartedRPC(float gameTime, float gemsPerPlayer, float gamesToWin, PhotonMessageInfo info) {
 		isStarted = true;
 		isInited = false;
 		isStopped = false;
@@ -107,6 +110,7 @@ public class GameMain : Photon.MonoBehaviour {
 			MainMenu menu = scriptsMainMenu.GetComponent<MainMenu>();
 			this.gameDuration = gameTime;
 			menu.gameData.numFlagItems = gemsPerPlayer;
+			this.roundsToWinGame = Mathf.RoundToInt (gamesToWin);
 		}
 		if (gameNotStartedText != null) {
 			GameObject.Destroy(gameNotStartedText);
@@ -366,7 +370,7 @@ public class GameMain : Photon.MonoBehaviour {
 		gamesToWin = Mathf.RoundToInt(gameData.gamesToWin);
 
 		photonView.RPC ("PlayerScoredRPC", PhotonTargets.AllViaServer, -1, 0);
-		photonView.RPC ("GameStartedRPC", PhotonTargets.AllViaServer, gameDuration, gameData.numFlagItems);
+		photonView.RPC ("GameStartedRPC", PhotonTargets.AllViaServer, gameDuration, gameData.numFlagItems, gameData.gamesToWin);
 		photonView.RPC ("ResetPlayers", PhotonTargets.AllViaServer, new object[0]);
 		photonView.RPC ("EnablePlayerControls", PhotonTargets.AllViaServer, false);
 		photonView.RPC ("EnableDefaultGun", PhotonTargets.AllViaServer, false);
