@@ -11,7 +11,6 @@ public class PowerUpShield : PowerUpBase {
 		GameObject obj = GameObject.Find ("Scripts");
 		GameMain main = obj.GetComponent<GameMain>();
 		PowerUpProperty duration = main.GetPowerUpProperty("PowerUpShield", "duration");
-
 		player.GetComponent<PlayerLogic>().ActivateShield(duration.val);
 	}
 

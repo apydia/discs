@@ -12,6 +12,13 @@ public class SpellSlowDown : SpellBase {
 
 	public override void Begin (GameObject player)
 	{
+		GameObject sp = GameObject.Find ("SoundPlayer");
+		if (sp != null) {
+			SoundPlayer soundPlayer = sp.GetComponent<SoundPlayer>();
+			if (soundPlayer != null) {
+				soundPlayer.Play(GameSound.BAD_MAGIC);
+			}
+		}
 		player.GetComponent<PlayerController>().speed *= this.rate;
 		player.GetComponent<PlayerLogic>().spells.Add(this);
 		base.Begin (player);

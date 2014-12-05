@@ -56,6 +56,13 @@ public class PlayerController : Photon.MonoBehaviour {
 
 		if (Input.GetButtonDown ("Fire1") && defaultGunEnabled) {
 			if (gunAmmoAmount > 0) {
+				GameObject sp = GameObject.Find ("SoundPlayer");
+				if (sp != null) {
+					SoundPlayer soundPlayer = sp.GetComponent<SoundPlayer>();
+					if (soundPlayer != null) {
+						soundPlayer.Play(GameSound.DEFAULT_GUN);
+					}
+				}
 				Vector3 hitPoint = main.mouseVec;
 				photonView.RPC ("SpawnProjectile", PhotonTargets.All, hitPoint);
 				--gunAmmoAmount;
@@ -72,7 +79,7 @@ public class PlayerController : Photon.MonoBehaviour {
 
 		float upDown = Input.GetAxis("Mouse ScrollWheel");
 
-		if (Input.GetKeyDown (KeyCode.E)) {
+		if (Input.GetKeyDown (KeyCode.E) || Input.GetKeyDown (KeyCode.Tab)) {
 			gameObject.GetComponent<PlayerLogic>().SelectNextPowerUp();
 		}
 		if (Input.GetKeyDown (KeyCode.Q)) {

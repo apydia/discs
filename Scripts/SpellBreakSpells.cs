@@ -10,6 +10,13 @@ public class SpellBreakSpells : SpellBase {
 	
 	public override void Begin (GameObject player)
 	{
+		GameObject sp = GameObject.Find ("SoundPlayer");
+		if (sp != null) {
+			SoundPlayer soundPlayer = sp.GetComponent<SoundPlayer>();
+			if (soundPlayer != null) {
+				soundPlayer.Play(GameSound.REGENERATION);
+			}
+		}
 		player.GetComponent<PlayerLogic>().RemoveAllSpells();
 		base.Begin (player);
 	}

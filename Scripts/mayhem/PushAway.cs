@@ -35,6 +35,9 @@ public class PushAway : Photon.MonoBehaviour {
 	}
 
 	public void Kill() {
+		if (audio != null) {
+			audio.Stop();
+		}
 		if (photonView.isMine) {
 			if (this.gameObject != null) {
 				PhotonNetwork.Destroy (this.gameObject);
@@ -48,6 +51,7 @@ public class PushAway : Photon.MonoBehaviour {
 	int playerID;
 	GameObject spawnedEffect; 
 	float createTime;
+	AudioSource audio;
 
 	// Update is called once per frame
 	void Update () {
@@ -76,6 +80,14 @@ public class PushAway : Photon.MonoBehaviour {
 			transform.position = player.transform.position;
 		}
 		transform.Translate(0f ,-size, 0f);
+
+		GameObject sp = GameObject.Find ("SoundPlayer");
+		if (sp != null && audio == null) {
+			SoundPlayer soundPlayer = sp.GetComponent<SoundPlayer>();
+			if (soundPlayer != null) {
+				audio = soundPlayer.Play(GameSound.RAY_GUN);
+			}
+		}
 
 		if (photonView.isMine && player != null) {
 			GameMain main = GameObject.Find ("Scripts").GetComponent<GameMain>();

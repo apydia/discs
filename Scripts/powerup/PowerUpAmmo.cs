@@ -11,6 +11,13 @@ public class PowerUpAmmo : PowerUpBase {
 	
 	void OnTriggerEnter(Collider other) {
 		if (other.gameObject.tag == "Player") {
+			GameObject sp = GameObject.Find ("SoundPlayer");
+			if (sp != null) {
+				SoundPlayer soundPlayer = sp.GetComponent<SoundPlayer>();
+				if (soundPlayer != null) {
+					soundPlayer.Play(GameSound.AMMO_PICK_UP);
+				}
+			}
 			other.gameObject.GetComponent<PlayerController>().gunAmmoAmount += 10;
 			other.gameObject.GetComponent<PlayerLogic>().PowerUpDestroyed(id);
 		}

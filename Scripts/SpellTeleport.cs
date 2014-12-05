@@ -26,6 +26,13 @@ public class SpellTeleport : SpellBase {
 
 	public override void End (GameObject player)
 	{
+		GameObject sp = GameObject.Find ("SoundPlayer");
+		if (sp != null) {
+			SoundPlayer soundPlayer = sp.GetComponent<SoundPlayer>();
+			if (soundPlayer != null) {
+				soundPlayer.Play(GameSound.TELETRANSPORTO);
+			}
+		}
 		player.transform.position = spawnedBeacon.transform.position;
 		GameObject.Destroy(spawnedBeacon);
 		base.End (player);

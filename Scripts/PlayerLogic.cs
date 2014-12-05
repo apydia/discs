@@ -232,6 +232,13 @@ public class PlayerLogic : Photon.MonoBehaviour
 
 	public void CapturedFlagItem(int itemId) {
 		photonView.RPC ("CapturedFlagItemRPC", PhotonTargets.All, itemId);
+		GameObject sp = GameObject.Find ("SoundPlayer");
+		if (sp != null) {
+			SoundPlayer soundPlayer = sp.GetComponent<SoundPlayer>();
+			if (soundPlayer != null) {
+				soundPlayer.Play(GameSound.PICKUP_DIAMOND_1);
+			}
+		}
 	}
 
 	[RPC]
@@ -342,6 +349,13 @@ public class PlayerLogic : Photon.MonoBehaviour
 	
 	public void PowerUpCollected(PowerUp powerUp) {
 		photonView.RPC ("PowerUpCollectedRPC", PhotonPlayer.Find(this.playerID), powerUp.GetName(), powerUp.GetId ());
+		GameObject sp = GameObject.Find ("SoundPlayer");
+		if (sp != null && numPowerUps != 8) { // TODO: MAX_PUPS!!!
+			SoundPlayer soundPlayer = sp.GetComponent<SoundPlayer>();
+			if (soundPlayer != null) {
+				soundPlayer.Play(GameSound.WATER_DRIP_1);
+			}
+		}
 	}
 
 	public void PowerUpDestroyed(int itemId) {
@@ -505,12 +519,24 @@ public class PlayerLogic : Photon.MonoBehaviour
 
 	bool doPrediction = true;
 	public Vector3 extPos;
+	bool fallSoundPlayed = false;
 	// Update is called once per frame
 	// TODO: better prediction model... movement relative to last position
 	void Update()
 	{
 		if (Input.GetKeyDown (KeyCode.KeypadEnter)) {
 			doPrediction = !doPrediction;
+		}
+
+		if (photonView.isMine && rigidbody.transform.position.y < -8f && !fallSoundPlayed) {
+			GameObject sp = GameObject.Find ("SoundPlayer");
+			if (sp != null) {
+				SoundPlayer soundPlayer = sp.GetComponent<SoundPlayer>();
+				if (soundPlayer != null) {
+					soundPlayer.Play(GameSound.FALL_DOWN);
+				}
+			}
+			fallSoundPlayed = true;
 		}
 
 		if (photonView.isMine && rigidbody.transform.position.y < -33f && !didDie) {
@@ -523,6 +549,7 @@ public class PlayerLogic : Photon.MonoBehaviour
 		    rigidbody.velocity = Vector3.zero;
 		    rigidbody.angularVelocity = Vector3.zero;
 
+			fallSoundPlayed = false;
 			didDie = false;
 		}
 
@@ -534,8 +561,7 @@ public class PlayerLogic : Photon.MonoBehaviour
 			//spawnedShield.GetComponent<ParticleSystem>().particleEmitter.emit=true; 
 		} else {
 			if (_isShieldOn && (float)PhotonNetwork.time > shieldDeactivateTime) {
-				GameObject.Destroy (spawnedShield.gameObject);
-				_isShieldOn = false;
+				DeActivateShieldRPC ();
 			}
 			//spawnedShield.GetComponent<ParticleSystem>().particleEmitter.emit=false;
 		}
@@ -601,6 +627,13 @@ public class PlayerLogic : Photon.MonoBehaviour
 
 	public void ActivateShield(float duration) {
 		photonView.RPC ("ActivateShieldRPC", PhotonTargets.All, duration);
+		GameObject sp = GameObject.Find ("SoundPlayer");
+		if (sp != null) {
+			SoundPlayer soundPlayer = sp.GetComponent<SoundPlayer>();
+			if (soundPlayer != null) {
+				soundPlayer.Play(GameSound.SHIELD_UP);
+			}
+		}
 	}
 
 	public void DeActivateShield() {
@@ -609,7 +642,16 @@ public class PlayerLogic : Photon.MonoBehaviour
 
 	[RPC]
 	void DeActivateShieldRPC() {
+		GameObject.Destroy (spawnedShield.gameObject);
+		_isShieldOn = false;
 		shieldDeactivateTime = 0f;
+		GameObject sp = GameObject.Find ("SoundPlayer");
+		if (sp != null) {
+			SoundPlayer soundPlayer = sp.GetComponent<SoundPlayer>();
+			if (soundPlayer != null) {
+				soundPlayer.Play(GameSound.SHIELD_DOWN);
+			}
+		}
 	}
 
 	[RPC]
@@ -658,6 +700,7 @@ public class PlayerLogic : Photon.MonoBehaviour
 	public void Die() {
 
 		didDie = true;
+
 		respawnTime = Time.time + 1f;
 
 		photonView.RPC ("DieRPC", PhotonTargets.All, this.playerID, initX, initZ);

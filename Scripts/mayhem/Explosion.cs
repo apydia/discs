@@ -20,6 +20,15 @@ public class Explosion : MonoBehaviour {
 		Vector3 pos = obj.transform.position;
 		pos.y = 2f;
 		obj.transform.position = pos;
+
+		GameObject sp = GameObject.Find ("SoundPlayer");
+		if (sp != null) {
+			SoundPlayer soundPlayer = sp.GetComponent<SoundPlayer>();
+			if (soundPlayer != null) {
+				soundPlayer.Play(GameSound.EXPLOSION_1);
+			}
+		}
+
 	}
 
 	float explodeStartTime = 0f;

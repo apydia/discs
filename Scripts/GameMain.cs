@@ -30,14 +30,25 @@ public class GameMain : Photon.MonoBehaviour {
 	bool matchEnded = false;
 	string state = "just_loaded";
 
+	SoundPlayer soundPlayer;
+
 	void Start() {
 		players = new List<PlayerStats> ();
 
 		int w = Screen.width;
 		int h = Screen.height;
 		if (!PhotonNetwork.isMasterClient) {
-			//GameObject.Find ("DreadedDread").GetComponent<AudioSource>().mute = true;
+			GameObject dreadedDread = GameObject.Find ("DreadedDread");
+			if (dreadedDread != null) {
+				dreadedDread.GetComponent<AudioSource>().mute = true;
+			}
 		}
+
+		GameObject sp = GameObject.Find ("SoundPlayer");
+		if (sp != null) {
+			soundPlayer = sp.GetComponent<SoundPlayer>();
+		}
+
 		GameObject objAmmo = GameObject.Find ("AmmoThingyGUITexture");
 		GUITexture guiText = objAmmo.GetComponent<GUITexture>();
 		
@@ -163,6 +174,15 @@ public class GameMain : Photon.MonoBehaviour {
 		if (playerStats != null) {
 			playerStats.score += points;
 		}
+
+		GameObject sp = GameObject.Find ("SoundPlayer");
+		if (sp != null && points > 0) {
+			SoundPlayer soundPlayer = sp.GetComponent<SoundPlayer>();
+			if (soundPlayer != null) {
+				soundPlayer.Play(GameSound.SCORES_1);
+			}
+		}
+
 		GameObject player = GameObject.Find ("Player"+playerID);
 
 		if (player != null) {
@@ -635,8 +655,13 @@ public class GameMain : Photon.MonoBehaviour {
 			countDownText.GetComponent<FlashyTextGUITexture>().growthFactor = 2.5f;
 			if (countDown != 0) {
 				countDownText.GetComponent<GUIText>().text = "" + countDown;
+				soundPlayer.Play(GameSound.COUNTDOWN_BEEP);
 			} else {
 				countDownText.GetComponent<GUIText>().text = "GO!";
+				AudioSource source = soundPlayer.Play(GameSound.COUNTDOWN_BEEP);
+				if (source != null) {
+					source.pitch = 2.0f;
+				}
 			}
 		}
 	}
